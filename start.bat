@@ -1,2 +1,3 @@
+SETCONSOLE /minimize
 @echo off
-start python wuxiaworld2ebook.py &
+start pythonw wuxiaworld2ebook.py &
