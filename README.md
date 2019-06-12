@@ -1,8 +1,8 @@
 
-# WuxiaWorld-2-eBook
-This Python script will download chapters from novels availaible on wuxiaworld.com and saves them into the .epub format.
+# Novel 2 E-Book
+This Python program will download books and chapters from novels availaible on [WuxiaWorld](wuxiaworld.com) and [Gravity Tales](http://gravitytales.com/) and  and saves them into the .epub format.
 
-Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the similar functionality made by [MakeYourLifeEasier](https://github.com/MakeYourLifeEasier). Beware this site is still under development.
+Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the similar functionality (doesn't support Gravity Tales) made by [MakeYourLifeEasier](https://github.com/MakeYourLifeEasier). Beware this site is still under development.
 
 ## Getting Started
 
@@ -10,8 +10,8 @@ To run this script you'll need to have Python 3.7.x installed which you can find
 
 ### Features
 
-- Download and save you favorite Novels from wuxiaworld.com into a .epub file
-- Automatically adds some metadata like title and cover
+- Download and save you favorite novels from [WuxiaWorld](wuxiaworld.com) and [Gravity Tales](http://gravitytales.com/) into a .epub file
+- Automatically adds some metadata like title, cover, and author (translator used as author as it was easier to implement)
 
 ### Prerequisites
 
@@ -25,21 +25,21 @@ pip install -r requirements.txt
 
 ### Usage
 
-Download the precompiled program from [releases](https://github.com/EternalTrail/Wuxiaworld-2-eBook/releases)
+Download the precompiled program from [releases](https://github.com/EternalTrail/Wuxiaworld-2-eBook/releases), unzip the file, and run novel2ebook.exe to launch the program.
 
-Additionally, you can download the script and navigate to the folder using the console then write
-
-```
-python wuxiaworld2ebook.py
-```
-
-or just use the start.bat file. If you didn't add Python to the PATH variable during the installation or afterwards the write
+Additionally, you can download the source, navigate to the folder where you stored the source code using the console then write:
 
 ```
-path/where/you/installed/python.exe wuxiaworld2ebook.py
+python novel2ebook.py
 ```
 
-After that just select the novel you want to read, select the chapter range or the book you want to download and hit the "Download" button. Keep it mind that it will take some time for the script to finish, so don't close the window or the console if the program doesn't respond.
+Or just use the start.bat file. If you didn't add Python to the PATH variable during the installation or afterwards the write
+
+```
+path/where/you/installed/python.exe novel2ebook.py
+```
+
+After that just select the novel you want to read, select the chapter range or the book you want to download and hit the "Download" button. Keep it mind that it will take some time for the script to finish, so don't close the window or the console.
 
 ## Keep in mind!
 
@@ -50,6 +50,7 @@ If you come across bugs or suggestions for future updates don't hesitate to open
 
 - Cover editing and custom covers
 - More ebook formats
+- More websites
 
 ## License
 
