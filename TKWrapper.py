@@ -5,29 +5,35 @@ from PIL import ImageTk
 
 class TKWrapper():
     
-    def __init__(self, width=50, height=50):
+    def __init__(self, title = "GUI Program",width=50, height=50, icon = None):
         
-        #Initialise Tkinter GUI
+        #Initialise Tkinter GUI variables
         self.main = tk.Tk()
-        self.main.title("Wuxiaworld-2-eBook")
+        self.main.title(title)
         self.main.geometry("{}x{}".format(width, height))
         self.main.resizable(True, True)
         self.app = tk.Frame(self.main)
         self.app.grid()
         self.guiElements = {}
-        self.columnsRows = [0]
+        self.columnPopulation = [0]
+        self.icon = icon
     
     
     def appendColumn(self, columnNumber):
         
-        # Append columns to the list until we reach the column number input
-        while columnNumber+1 > len(self.columnsRows):
-            self.columnsRows.append(0)
+        # Append columnPopulation to the list until we reach the column number input
+        while columnNumber+1 > len(self.columnPopulation):
+            self.columnPopulation.append(0)
     
     
     def incrementRow(self, column, rowspan = 1):
         
-        self.columnsRows[column] += rowspan
+        self.columnPopulation[column] += rowspan
+    
+    
+    def decrementRow(self, column):
+        
+        self.columnPopulation[column] -= 1
     
     
     def insertImage(self, elementName, imageInput, column, kwargs={}):
@@ -37,7 +43,7 @@ class TKWrapper():
         # Convert input Pillow Image to the correct format and put it in the GUI grid
         imageInput = ImageTk.PhotoImage(imageInput)
         image = tk.Label(self.app, image=imageInput)
-        image.grid(column = column, row = self.columnsRows[column], **kwargs)
+        image.grid(column = column, row = self.columnPopulation[column], **kwargs)
         image.image = imageInput
         
         # Manage rows
@@ -63,7 +69,7 @@ class TKWrapper():
         
         # Create a label
         label = ttk.Label(self.app, text = labelText)
-        label.grid(column = column, row = self.columnsRows[column], **kwargs)
+        label.grid(column = column, row = self.columnPopulation[column], **kwargs)
         
         # Manage rows
         if 'rowspan' in kwargs.keys():
@@ -82,7 +88,7 @@ class TKWrapper():
         # Create a boolean variable and the corresponding checkbutton
         boolVar = tk.BooleanVar()
         checkbutton = ttk.Checkbutton(self.app, variable=boolVar, offvalue=False, onvalue=True, state="enabled", **kwargs)
-        checkbutton.grid(column = column, row = self.columnsRows[column], **kwargs2)
+        checkbutton.grid(column = column, row = self.columnPopulation[column], **kwargs2)
         
         # Manage rows
         if 'rowspan' in kwargs2.keys():
@@ -101,7 +107,7 @@ class TKWrapper():
         # Create a string variable and a corresponding combobox
         strVar = tk.StringVar()
         combobox = ttk.Combobox(self.app, textvariable = strVar, state = "readonly", **kwargs)
-        combobox.grid(column = column, row = self.columnsRows[column], **kwargs2)
+        combobox.grid(column = column, row = self.columnPopulation[column], **kwargs2)
         
         # If a callback function is one of the inputs, attach it to the string variable
         if varFunction != None:
@@ -128,7 +134,7 @@ class TKWrapper():
         
         # Create a button
         button = ttk.Button(self.app, text = labelText, **kwargs)
-        button.grid(column = column, row = self.columnsRows[column], **kwargs2)
+        button.grid(column = column, row = self.columnPopulation[column], **kwargs2)
         
         # Manage Rows
         if 'rowspan' in kwargs2.keys():
@@ -140,7 +146,29 @@ class TKWrapper():
         self.guiElements[elementName] = button
     
     
-    def begin(self):
+    def createProgressbar(self, elementName, column, kwargs={}, kwargs2={}):
+        
+        self.appendColumn(column)
+        
+        # Create a progressbar
+        progressBar = ttk.Progressbar(self.app, orient = tk.HORIZONTAL, **kwargs)
+        progressBar.grid(column = column, row = self.columnPopulation[column], **kwargs2)
+        
+        # Manage Rows
+        if 'rowspan' in kwargs2.keys():
+            self.incrementRow(column, kwargs2['rowspan'])
+        else:
+            self.incrementRow(column)
+        
+        # Store a reference to the button
+        self.guiElements[elementName] = progressBar
     
+    
+    def begin(self):
+        
+        # Set the icon
+        if self.icon != None:
+            self.main.iconbitmap(self.icon)
+        
         # Launch the GUI
         self.main.mainloop()

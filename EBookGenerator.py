@@ -14,7 +14,7 @@ class EBookGenerator:
             bookName = bookName.replace(character, " ")
         
         # Ceate the ebook file
-        epub = zipfile.ZipFile(novelName + ", " + bookName + ".epub", "w")
+        epub = zipfile.ZipFile(novelName + ", " + bookName + ".epub", "w", zipfile.ZIP_DEFLATED)
 
         # Generate unique ID for the book and create containers for book info
         uniqueid = uuid.uuid1().hex
@@ -30,7 +30,7 @@ class EBookGenerator:
             epub.writestr("OEBPS/"+basename, str(html))
             tableOfContentsChapters += '''<li class="toc-Chapter-rw" id="{}">
                 <a href="{}">{}</a>
-                </li>'''.format(i, "{}.xhtml".format(i), html.title.string)
+                </li>'''.format(i, "{}.xhtml".format(i), html.title.string.replace("<",'&lt;').replace(">",'&gt;'))
         
         # Format the metadata of the book
         metadata = '''<dc:title xmlns:dc="http://purl.org/dc/elements/1.1/">{}</dc:title>
