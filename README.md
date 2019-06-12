@@ -10,7 +10,7 @@ To run this script you'll need to have Python 3.7.x installed which you can find
 
 ### Features
 
-- Download and save you favorite novels from [WuxiaWorld](https://www.wuxiaworld.com) and [Gravity Tales](https://gravitytales.com/) into a .epub file
+- Download your favorite novels from [WuxiaWorld](https://www.wuxiaworld.com) and [Gravity Tales](https://gravitytales.com/) and save them into .epub files
 - Automatically adds some metadata like title, cover, and author (translator used as author as it was easier to implement)
 
 ### Prerequisites
