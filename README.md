@@ -1,6 +1,6 @@
 
 # Novel 2 E-Book
-This Python program will download books and chapters from novels availaible on [WuxiaWorld](wuxiaworld.com) and [Gravity Tales](http://gravitytales.com/) and  and saves them into the .epub format.
+This Python program will download books and chapters from novels availaible on [WuxiaWorld](https://www.wuxiaworld.com) and [Gravity Tales](https://gravitytales.com/) and  and saves them into the .epub format.
 
 Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the similar functionality (doesn't support Gravity Tales) made by [MakeYourLifeEasier](https://github.com/MakeYourLifeEasier). Beware this site is still under development.
 
@@ -10,7 +10,7 @@ To run this script you'll need to have Python 3.7.x installed which you can find
 
 ### Features
 
-- Download and save you favorite novels from [WuxiaWorld](wuxiaworld.com) and [Gravity Tales](http://gravitytales.com/) into a .epub file
+- Download and save you favorite novels from [WuxiaWorld](https://www.wuxiaworld.com) and [Gravity Tales](https://gravitytales.com/) into a .epub file
 - Automatically adds some metadata like title, cover, and author (translator used as author as it was easier to implement)
 
 ### Prerequisites
