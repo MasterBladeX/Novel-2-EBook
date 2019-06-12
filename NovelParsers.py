@@ -249,9 +249,10 @@ class GTParser:
         soup = PageTools().getSoupFromUrl(self.url+"/vote")
         
         # Extract the required novel info
-        novelInfo = PageTools().getElementsFromSoup(soup, [{"id":"votelist"},{"class_":"col-xs-12 col-sm-6 col-md-3 col-lg-3 image"}])
-        authorInfo = PageTools().getElementsFromSoup(soup, [{"id":"votelist"},{"class_":"col-xs-12 col-sm-6 col-md-6 col-lg-7 details"},\
-                                                     {"class_":"label label-primary"}],findAllEnableList = [True, True, False], onlyText=True)
+        novelInfo = PageTools().getElementsFromSoup(soup, [{"class_":"col-xs-12 col-sm-6 col-md-3 col-lg-3 image"}])
+        authorInfo = PageTools().getElementsFromSoup(soup, [{"class_":"col-xs-12 col-sm-6 col-md-6 col-lg-7 details"},\
+                                                     {"class_":"label label-primary"}],findAllEnableList = [True, False], onlyText=True)
+        
         for novel, author in zip(novelInfo,authorInfo):
             midHtml = PageTools().getElementsFromSoup(novel, ["a"])[0]
             innerHtml = PageTools().getElementsFromSoup(novel, ["img"])[0]
