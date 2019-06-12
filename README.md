@@ -41,6 +41,10 @@ path/where/you/installed/python.exe novel2ebook.py
 
 After that just select the novel you want to read, select the chapter range or the book you want to download and hit the "Download" button. Keep it mind that it will take some time for the script to finish, so don't close the window or the console.
 
+## For developers
+
+If you make any changes to the source and want to package it up, just run the install.bat file to compile it (Requires Pyinstaller).
+
 ## Keep in mind!
 
 If you come across bugs or suggestions for future updates don't hesitate to open up a "new issue" in the issue tab or write me an email at [andriux19960823@gmail.com](mailto:andriux19960823@gmail.com).
