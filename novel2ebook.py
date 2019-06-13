@@ -2,7 +2,7 @@ import sys, inspect
 import NovelParsers
 from NovelDownloader import NovelDownloader
 from TKWrapper import TKWrapper
-
+import threading
 
 class NovelGUI:
     
@@ -33,6 +33,8 @@ class NovelGUI:
         self.TKW.createCheckbutton("ChaptersOnly", 1, {"command":self.onChapterCheckboxChange}, {"sticky":"W"})
         self.TKW.decrementRow(1)
         self.TKW.createButton("DownloadButton", "Download", 1, {"command":self.onDownloadButtonClick})
+        self.TKW.createButton("CancelButton", "Cancel", 1, {"command":self.onCancelButtonClick})
+        self.stopDownload = False
         
         # Attach functions after creating the comboboxes to prevent errors on startup
         self.TKW.guiElements["NovelCombobox"][0].trace("w", self.onNovelFieldChange)
@@ -46,6 +48,13 @@ class NovelGUI:
         self.TKW.incrementRow(0)
         self.TKW.createProgressbar("ProgressBar", 0, {"length":400}, {"columnspan":2, "pady":50})
         self.progressTrack = 0
+        
+        # Set download pool size (how many chapters to download at a time)
+        self.poolSize = 40
+        
+        # Set the update interval
+        self.updateInterval = 100
+        self.updateGUI()
         
         # Launch the GUI
         self.TKW.begin()
@@ -128,10 +137,23 @@ class NovelGUI:
         self.TKW.guiElements["EndCombobox"][1].current(0)
         
     
-    def updateProgressBar(self):
-        self.progressTrack += 1
+    def updateProgresstrack(self):
+        
+        if self.stopDownload == True:
+            self.progressTrack = 0
+            return True
+        else:
+            self.progressTrack += 1
+            return False
+        
+    def updateGUI(self):
         self.TKW.guiElements["ProgressBar"]['value']=self.progressTrack
-        self.TKW.app.update()
+        self.TKW.app.after(self.updateInterval, self.updateGUI)
+        #self.TKW.app.update()
+    
+    def onCancelButtonClick(self):
+        
+        self.stopDownload = True
     
     
     def onDownloadButtonClick(self):
@@ -140,17 +162,26 @@ class NovelGUI:
         # depending on the checkbutton state
         novel = self.TKW.guiElements["NovelCombobox"][0].get()
         self.progressTrack = 0
+        self.stopDownload = False
         if self.TKW.guiElements["ChaptersOnly"][0].get():
             chapterList = list(dict.fromkeys(self.selectedParser.getNovelChapterNames(novel)))
             startChapter = chapterList.index(self.TKW.guiElements["BookCombobox"][0].get())
             endChapter = chapterList.index(self.TKW.guiElements["EndCombobox"][0].get())
             self.TKW.guiElements["ProgressBar"].config(mode="determinate", maximum = endChapter-startChapter+1, value = 0)
-            NovelDownloader.generateBookFromTo(self.selectedParser, novel, startChapter, endChapter, callback = self.updateProgressBar)
+            self.newThread = threading.Thread(target=NovelDownloader.generateBookFromToMulti, args=(self.selectedParser,\
+                                              novel, startChapter, endChapter), kwargs={"callback":self.updateProgresstrack, "poolSize":self.poolSize})
+            self.newThread.start()
+            #NovelDownloader.generateBookFromToMulti(self.selectedParser, novel, startChapter, endChapter, callback = self.updateProgresstrack)
         else:
             chapterList = self.selectedParser.getNovelBookChapterLinks(novel, self.TKW.guiElements["BookCombobox"][0].get())
             self.TKW.guiElements["ProgressBar"].config(mode="determinate", maximum = len(chapterList), value = 0)
-            NovelDownloader.generateBook(self.selectedParser, novel, self.TKW.guiElements["BookCombobox"][0].get(), callback = self.updateProgressBar)
-
+            self.newThread = threading.Thread(target=NovelDownloader.generateBookMulti, args=(self.selectedParser,\
+                                              novel, self.TKW.guiElements["BookCombobox"][0].get()), kwargs={"callback":self.updateProgresstrack, "poolSize":self.poolSize})
+            self.newThread.start()
+            #NovelDownloader.generateBook(self.selectedParser, novel, self.TKW.guiElements["BookCombobox"][0].get(), callback = self.updateProgresstrack)
+    
+    
+    
 
 if __name__ == "__main__":
     NovelGUI()

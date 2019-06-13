@@ -1,3 +1,4 @@
+import urllib
 import urllib.request
 from bs4 import BeautifulSoup
 import ssl
@@ -6,17 +7,22 @@ import json
 
 class PageTools():
 
-    def downloadPage(self, url):
+    def downloadPage(self, url, timeout = 5, attempts = 5):
         
         # Fake browser headers
         ssl._create_default_https_context = ssl._create_unverified_context
         urlReq = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh;Intel Mac OS X 10_9_3)'+\
                                         ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
         
-        # Open url, read the response and return it
-        with urllib.request.urlopen(urlReq) as response:
-             return response.read()
-    
+        # Open url, read the response and return it, attempty
+        for i in range(attempts):
+            try:
+                with urllib.request.urlopen(urlReq, timeout = timeout) as response:
+                     return response.read()
+            except:
+                print("Connection to {} failed, retrying ({})...".format(url, i+1))
+                pass
+        raise urllib.error.URLError("Connection to {} timed-out/failed, retried {} times".format(url, attempts))
     
     def getJsonFromUrl(self, url):
     
@@ -106,7 +112,7 @@ class PageTools():
         return elementList
     
     
-    def getElementsFromUrl(self, url, elementRecursiveList, findAllEnableList = None, onlyText = False, recursionIndex = 0):
+    def getElementsFromUrl(self, url, elementRecursiveList, findAllEnableList = True, onlyText = False, recursionIndex = 0):
         
         # Get the requested elements directly from the url
         return self.getElementsFromSoup(self.getSoupFromUrl(url), elementRecursiveList, findAllEnableList, onlyText, recursionIndex)
