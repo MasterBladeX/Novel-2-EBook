@@ -14,21 +14,11 @@ To run this script you'll need to have Python 3.7.x installed which you can find
 - Automatically adds some metadata like title, cover, and author (translator used as author as it was easier to implement)
 - Concurrent download of chapters - *significantly* faster download of books
 
-### Prerequisites
-
-As mentioned before this script was written for Python version 3.7.x. It may work with other versions too but none are tested.
-Additionally the Python image library (Pillow), lxml, and BeautifulSoup4 are required.
-To install all dependencies just use the console to navigate into the project folder and write
-
-```
-pip install -r requirements.txt
-```
-
 ### Usage
 
 Download the precompiled program from [releases](https://github.com/EternalTrail/Wuxiaworld-2-eBook/releases), unzip the file, and run novel2ebook.exe to launch the program.
 
-Additionally, you can download the source, navigate to the folder where you stored the source code using the console then write:
+Additionally, you can download the source, install the requirements as mentioned below, navigate to the folder where you stored the source code using the console and write:
 
 ```
 python novel2ebook.py
@@ -41,6 +31,16 @@ path/where/you/installed/python.exe novel2ebook.py
 ```
 
 After that just select the novel you want to read, select the chapter range or the book you want to download and hit the "Download" button. Once the download is finished, the novel willl be stored in the same folder as the program/source. Keep it mind that it will take some time for the book to be downloaded, so don't close the window or the console (or do as you please, *you do you*).
+
+### Prerequisites
+
+As mentioned before this script was written for Python version 3.7.x. It may work with other versions too but none are tested.
+Additionally the Python image library (Pillow), lxml, and BeautifulSoup4 are required.
+To install all dependencies just use the console to navigate into the project folder and write
+
+```
+pip install -r requirements.txt
+```
 
 ## For developers
 
