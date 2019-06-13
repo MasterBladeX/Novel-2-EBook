@@ -3,6 +3,7 @@ import NovelParsers
 from NovelDownloader import NovelDownloader
 from TKWrapper import TKWrapper
 import threading
+import uuid
 
 class NovelGUI:
     
@@ -30,10 +31,11 @@ class NovelGUI:
         self.TKW.createCombobox("BookCombobox", 1, self.selectedParser.getNovelBookNames(novels[0]), {"width":42})
         self.TKW.createCombobox("EndCombobox", 1, self.selectedParser.getNovelBookNames(novels[0]), {"width":42})
         self.TKW.guiElements["EndCombobox"][1].configure(state="disabled")
-        self.TKW.createCheckbutton("ChaptersOnly", 1, {"command":self.onChapterCheckboxChange}, {"sticky":"W"})
+        self.TKW.createCheckbutton("ChaptersOnly", 1, {"command":self.onChapterCheckboxChange}, {"sticky":"W", "padx":20})
         self.TKW.decrementRow(1)
         self.TKW.createButton("DownloadButton", "Download", 1, {"command":self.onDownloadButtonClick})
-        self.TKW.createButton("CancelButton", "Cancel", 1, {"command":self.onCancelButtonClick})
+        self.TKW.decrementRow(1)
+        self.TKW.createButton("CancelButton", "Cancel", 1, {"command":self.onCancelButtonClick}, {"sticky":"E"})
         self.stopDownload = False
         
         # Attach functions after creating the comboboxes to prevent errors on startup
@@ -43,11 +45,12 @@ class NovelGUI:
         # Insert the cover image of the first book on WW
         self.coverImage = self.selectedParser.getImagePillow(novels[0])
         self.coverImage.thumbnail(self.coverSize)
-        self.TKW.insertImage("CoverImage", self.coverImage, 2, {"sticky":"W", "pady":20, "padx":20, "rowspan":20})
+        self.TKW.insertImage("CoverImage", self.coverImage, 3, {"sticky":"W", "pady":20, "padx":20, "rowspan":20})
         
         self.TKW.incrementRow(0)
-        self.TKW.createProgressbar("ProgressBar", 0, {"length":400}, {"columnspan":2, "pady":50})
+        self.TKW.createProgressbar("ProgressBar", 0, {"length":440}, {"columnspan":2, "pady":50, "sticky":"E"})
         self.progressTrack = 0
+        self.progressTrackID = None
         
         # Set download pool size (how many chapters to download at a time)
         self.poolSize = 40
@@ -137,8 +140,10 @@ class NovelGUI:
         self.TKW.guiElements["EndCombobox"][1].current(0)
         
     
-    def updateProgresstrack(self):
+    def updateProgresstrack(self, id):
         
+        if id != self.progressTrackID:
+            return True
         if self.stopDownload == True:
             self.progressTrack = 0
             return True
@@ -153,6 +158,7 @@ class NovelGUI:
     
     def onCancelButtonClick(self):
         
+        self.progressTrackID = uuid.uuid1()
         self.stopDownload = True
     
     
@@ -163,25 +169,26 @@ class NovelGUI:
         novel = self.TKW.guiElements["NovelCombobox"][0].get()
         self.progressTrack = 0
         self.stopDownload = False
+        self.progressTrackID = uuid.uuid1()
         if self.TKW.guiElements["ChaptersOnly"][0].get():
             chapterList = list(dict.fromkeys(self.selectedParser.getNovelChapterNames(novel)))
             startChapter = chapterList.index(self.TKW.guiElements["BookCombobox"][0].get())
             endChapter = chapterList.index(self.TKW.guiElements["EndCombobox"][0].get())
             self.TKW.guiElements["ProgressBar"].config(mode="determinate", maximum = endChapter-startChapter+1, value = 0)
             self.newThread = threading.Thread(target=NovelDownloader.generateBookFromToMulti, args=(self.selectedParser,\
-                                              novel, startChapter, endChapter), kwargs={"callback":self.updateProgresstrack, "poolSize":self.poolSize})
+                                              novel, startChapter, endChapter), kwargs={"callback":self.updateProgresstrack,\
+                                              "poolSize":self.poolSize, "idnum":self.progressTrackID})
             self.newThread.start()
             #NovelDownloader.generateBookFromToMulti(self.selectedParser, novel, startChapter, endChapter, callback = self.updateProgresstrack)
         else:
             chapterList = self.selectedParser.getNovelBookChapterLinks(novel, self.TKW.guiElements["BookCombobox"][0].get())
             self.TKW.guiElements["ProgressBar"].config(mode="determinate", maximum = len(chapterList), value = 0)
             self.newThread = threading.Thread(target=NovelDownloader.generateBookMulti, args=(self.selectedParser,\
-                                              novel, self.TKW.guiElements["BookCombobox"][0].get()), kwargs={"callback":self.updateProgresstrack, "poolSize":self.poolSize})
+                                              novel, self.TKW.guiElements["BookCombobox"][0].get()), kwargs={"callback":self.updateProgresstrack,\
+                                              "poolSize":self.poolSize, "idnum":self.progressTrackID})
             self.newThread.start()
             #NovelDownloader.generateBook(self.selectedParser, novel, self.TKW.guiElements["BookCombobox"][0].get(), callback = self.updateProgresstrack)
     
     
-    
-
 if __name__ == "__main__":
     NovelGUI()

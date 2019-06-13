@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from PageTools import PageTools
 from PIL import Image
 from io import BytesIO
-
+import re
 
 class WWParser:
     
@@ -186,36 +186,38 @@ class WWParser:
     
     def cleanChapter(self, soup):
         
-        has_spoiler = None
+        hasSpoiler = None
         
         # Extract the chapter title and the chapter content
-        chapter_title = soup.find(class_="caption clearfix")
-        content = chapter_title.find_next_sibling(class_="fr-view")
-        chapter_title = chapter_title.find("h4")
+        chapterTitle = soup.find(class_="caption clearfix")
+        content = chapterTitle.find_next_sibling(class_="fr-view")
+        chapterTitle = chapterTitle.find("h4")
         
         # Get the chapter title, make it hidden if it contains spoilers
         try:
-            if chapter_title.attrs["class"][0] == "text-spoiler":
-                has_spoiler = chapter_title.text
-                chapter_title = "Chapter name hidden due to potential spoilers"
+            if chapterTitle.attrs["class"][0] == "text-spoiler":
+                hasSpoiler = chapterTitle.text
+                chapterTitle = "Chapter name hidden due to potential spoilers"
             else:
-                chapter_title = chapter_title.text
+                chapterTitle = chapterTitle.text
         except IndexError:
-            chapter_title = chapter_title.text
+            chapterTitle = chapterTitle.text
         
         # Remove characters that might corrupt the ebook file
-        chapter_title = chapter_title.replace("<",'&lt;').replace(">",'&gt;')
+        chapterTitle = chapterTitle.replace("<",'&lt;').replace(">",'&gt;')
         
         
         for a in content.find_all("a"):
             a.decompose()
         
         # Add html header to the chapter
-        chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>'.format(chapter_title)
+        #chapter = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html>\n\n"
+        chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>\n'.format(chapterTitle)
+        #print(str(content))
         chapter += str(content)
-        if has_spoiler != None:
-            chapter += "<strong>The chapter name is: {}</strong>".format(has_spoiler)
-        
+        if hasSpoiler != None:
+            chapter += "<strong>The chapter name is: {}</strong>".format(hasSpoiler)
+        #chapter += "</body>\n</html>"
         # Return the chapter as a BeautifulSoup html object
         return BeautifulSoup(chapter, "html.parser")
 
@@ -354,18 +356,18 @@ class GTParser:
     def cleanChapter(self, soup):
         
         # Extract the chapter title and the chapter content
-        chapter_title = soup.find(id="contentElement")
-        content = chapter_title.find(id="chapterContent")
-        chapter_title = chapter_title.find("h4")
+        chapterTitle = soup.find(id="contentElement")
+        content = chapterTitle.find(id="chapterContent")
+        chapterTitle = chapterTitle.find("h4")
         
         # Get the chapter title, make it hidden if it contains spoilers
-        chapter_title = chapter_title.text
+        chapterTitle = chapterTitle.text
         
         # Remove characters that might corrupt the ebook file
-        chapter_title = chapter_title.replace("<",'&lt;').replace(">",'&gt;')
+        chapterTitle = chapterTitle.replace("<",'&lt;').replace(">",'&gt;')
         
         
-        chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>'.format(chapter_title)
+        chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>'.format(chapterTitle)
         chapter += str(content.decode_contents())
         
         # Return the chapter as a BeautifulSoup html object
