@@ -10,13 +10,14 @@ To run this script you'll need to have Python 3.7.x installed which you can find
 
 ### Features
 
-- Download your favorite novels from [WuxiaWorld](https://www.wuxiaworld.com) and [Gravity Tales](https://gravitytales.com/) and save them into .epub files
+- Download your favourite novels from [WuxiaWorld](https://www.wuxiaworld.com) and [Gravity Tales](https://gravitytales.com/) and save them as .epub files
 - Automatically adds some metadata like title, cover, and author (translator used as author as it was easier to implement)
+- Concurrent download of chapters - *significantly* faster download of books
 
 ### Prerequisites
 
 As mentioned before this script was written for Python version 3.7.x. It may work with other versions too but none are tested.
-Additionally the Python image library (Pillow), lxml and Beautifulsoup4 are required.
+Additionally the Python image library (Pillow), lxml, and BeautifulSoup4 are required.
 To install all dependencies just use the console to navigate into the project folder and write
 
 ```
@@ -39,11 +40,11 @@ Or just use the start.bat file. If you didn't add Python to the PATH variable du
 path/where/you/installed/python.exe novel2ebook.py
 ```
 
-After that just select the novel you want to read, select the chapter range or the book you want to download and hit the "Download" button. Keep it mind that it will take some time for the script to finish, so don't close the window or the console.
+After that just select the novel you want to read, select the chapter range or the book you want to download and hit the "Download" button. Once the download is finished, the novel willl be stored in the same folder as the program/source. Keep it mind that it will take some time for the book to be downloaded, so don't close the window or the console (or do as you please, *you do you*).
 
 ## For developers
 
-If you make any changes to the source and want to package it up, just run the install.bat file to compile it (Requires Pyinstaller).
+If you make any changes to the source and want to package it up, just run the install.bat file to compile it (Requires PyInstaller).
 
 ## Keep in mind!
 
