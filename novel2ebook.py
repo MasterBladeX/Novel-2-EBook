@@ -15,6 +15,7 @@ class NovelGUI:
         
         # Create an instance of the Tkinter wrapper and novel website parsers
         self.TKW = TKWrapper("Novel 2 E-Book", 700, 340, "favicon.ico")
+        # Load each of the parser classes in the NovelParsers module
         parsers = [parser for name, parser in inspect.getmembers(NovelParsers, inspect.isclass) if parser.__module__ == 'NovelParsers']
         self.coverSize = (210,300)
         self.parsers = []

@@ -4,7 +4,9 @@ from PIL import Image
 from io import BytesIO
 import re
 
-class WWParser:
+noCoverLink = "http://admin.johnsons.net/janda/files/flipbook-coverpage/nocoverimg.jpg"
+
+class WuxiaWorldParser:
     
     def __init__(self):
         
@@ -98,7 +100,7 @@ class WWParser:
             try:
                 coverImage = PageTools().downloadPage(self.novels[novelName][1])
             except:
-                coverImage = PageTools().downloadPage("http://admin.johnsons.net/janda/files/flipbook-coverpage/nocoverimg.jpg")
+                coverImage = PageTools().downloadPage(noCoverLink)
 
             # Add the books, chapters, and the cover to the novel library
             self.novelLibrary[novelName] = [bookTitles, chapterLibrary, bookToC, coverImage]
@@ -181,7 +183,7 @@ class WWParser:
     def getNovelBookChapterNames(self, novelName, bookName):
         
         self.loadNovelInfo(novelName)
-        return [chapter[0] for chapter in self.novelLibrary[novelName][2][bookName]]
+        return [chapter[1] for chapter in self.novelLibrary[novelName][2][bookName]]
     
     
     def cleanChapter(self, soup):
@@ -222,7 +224,7 @@ class WWParser:
         return BeautifulSoup(chapter, "html.parser")
 
 
-class GTParser:
+class GravityTalesParser:
     
     def __init__(self):
         
@@ -283,7 +285,7 @@ class GTParser:
         try:
             coverImage = PageTools().downloadPage(self.novels[novelName][1])
         except:
-            coverImage = PageTools().downloadPage("http://admin.johnsons.net/janda/files/flipbook-coverpage/nocoverimg.jpg")
+            coverImage = PageTools().downloadPage(noCoverLink)
         
         # Create an empty dictionary to store all chapter names and links
         chapterBlocks = PageTools().getElementsFromSoup(soup, [{"class":"tab-content"}, "div"])
@@ -350,7 +352,7 @@ class GTParser:
     def getNovelBookChapterNames(self, novelName, bookName):
         
         self.loadNovelInfo(novelName)
-        return [chapter[0] for chapter in self.novelLibrary[novelName][2][bookName]]
+        return [chapter[1] for chapter in self.novelLibrary[novelName][2][bookName]]
     
     
     def cleanChapter(self, soup):
@@ -374,7 +376,7 @@ class GTParser:
         return BeautifulSoup(chapter, "html.parser")
 
 
-class VNParser:
+class VolareNovelsParser:
     
     def __init__(self):
         
@@ -436,7 +438,7 @@ class VNParser:
         try:
             coverImage = PageTools().downloadPage(self.novels[novelName][1])
         except:
-            coverImage = PageTools().downloadPage("http://admin.johnsons.net/janda/files/flipbook-coverpage/nocoverimg.jpg")
+            coverImage = PageTools().downloadPage(noCoverLink)
         
         # Create an empty dictionary to store all chapter names and links
         chapterLibrary = []
@@ -503,7 +505,7 @@ class VNParser:
     def getNovelBookChapterNames(self, novelName, bookName):
         
         self.loadNovelInfo(novelName)
-        return [chapter[0] for chapter in self.novelLibrary[novelName][2][bookName]]
+        return [chapter[1] for chapter in self.novelLibrary[novelName][2][bookName]]
     
     
     def cleanChapter(self, soup):
@@ -542,3 +544,154 @@ class VNParser:
         #chapter += "</body>\n</html>"
         # Return the chapter as a BeautifulSoup html object
         return BeautifulSoup(chapter, "html.parser")
+
+
+class TotallyTranslationsParser:
+    
+    def __init__(self):
+        
+        self.url = "https://totallytranslations.com"
+        
+        # Create containers
+        self.novels = {}
+        self.novelNames = None
+        # self.novelSypnoses = None
+        self.parseNovelList()
+        
+        # Container for all novels that are requested
+        self.novelLibrary = {}
+    
+    
+    def clearNovelCache(self):
+        self.novelLibrary = {}
+    
+    
+    def insertSpecialCases(self):
+        
+        pass
+        
+    
+    def parseNovelList(self):
+        
+        novels = PageTools().getElementsFromUrl(self.url, [ {"class_":"col-md-6"}, {"class_":"slide"}], [False, True])
+        
+        for novel in novels:
+            title = PageTools().getElementsFromSoup(novel, [ {"class_":"slide-description"}, "strong"], onlyText=True)[0]
+            novelLink = PageTools().getElementsFromSoup(novel, [ {"class_":"slide-image"}, "a"])[0]
+            imgLink = PageTools().getElementsFromSoup(novelLink, ["img"])[0]['src']
+            self.novels[title] = [novelLink['href'], imgLink, "N/A"]
+            
+        self.insertSpecialCases()
+        
+        self.novelNames = list(self.novels.keys())
+        self.novelNames.sort()
+    
+    
+    def loadNovelInfo(self, novelName):
+        
+        if novelName in self.novelLibrary.keys():
+            return
+        
+        # Load the webpage for the novel
+        soup = PageTools().getElementsFromUrl(self.novels[novelName][0], [{"class_":"chapters-list"}])[0]
+        
+        titles = PageTools().getElementsFromSoup(soup, [{"class_":"chapters-title"}], onlyText=True)
+        chapterBlocks = PageTools().getElementsFromSoup(soup, [{"class_":"clearfix chapters-acc"}])
+        
+        # Download cover image
+        try:
+            coverImage = PageTools().downloadPage(self.novels[novelName][1])
+        except:
+            coverImage = PageTools().downloadPage(noCoverLink)
+        
+        # Create an empty dictionary to store all chapter names and links
+        chapterLibrary = []
+        bookToC = {}
+        for title, chapterBlock in zip(titles, chapterBlocks):
+            chapters = PageTools().getElementsFromSoup(chapterBlock, ["a"])
+            chapterInfo = [[chapter['href'], chapter.string.replace("<",'').replace(">",'')] for chapter in chapters]
+
+            # Store chapters for each book
+            bookToC[title] = chapterInfo
+            chapterLibrary.extend(bookToC[title])
+        
+        # Add the books, chapters, and the cover to the novel library
+        self.novelLibrary[novelName] = [titles, chapterLibrary, bookToC, coverImage]
+    
+    
+    def getNovelNames(self):
+        
+        return self.novelNames
+    
+    
+    def getImageBinary(self, novelName):
+        
+        self.loadNovelInfo(novelName)
+        return self.novelLibrary[novelName][3]
+    
+    
+    def getImagePillow(self, novelName):
+        
+        return Image.open(BytesIO(self.getImageBinary(novelName)))
+    
+    
+    def getNovelBookNames(self, novelName):
+        
+        self.loadNovelInfo(novelName)
+        return self.novelLibrary[novelName][0]
+    
+    
+    def getNovelChapterLinks(self, novelName):
+        
+        self.loadNovelInfo(novelName)
+        return [chapter[0] for chapter in self.novelLibrary[novelName][1]]
+    
+    
+    def getNovelChapterNames(self, novelName):
+        
+        self.loadNovelInfo(novelName)
+        return [chapter[1] for chapter in self.novelLibrary[novelName][1]]
+    
+    
+    def getNovelBookChapterLinks(self, novelName, bookName):
+        
+        self.loadNovelInfo(novelName)
+        return [chapter[0] for chapter in self.novelLibrary[novelName][2][bookName]]
+    
+    
+    def getNovelBookChapterNames(self, novelName, bookName):
+        
+        self.loadNovelInfo(novelName)
+        return [chapter[1] for chapter in self.novelLibrary[novelName][2][bookName]]
+    
+    
+    def cleanChapter(self, soup):
+        
+        hasSpoiler = None
+        
+        # Extract the chapter title and the chapter content
+        chapterTitle = soup.find(class_="entry-title fusion-post-title").string
+        content = soup.find(class_="post-content")
+        
+        # Remove characters that might corrupt the ebook file
+        chapterTitle = chapterTitle.replace("<",'&lt;').replace(">",'&gt;')
+        
+
+        for a in content.find_all("a"):
+            a.decompose()
+        
+        for button in content.find_all("button"):
+            button.decompose()
+        
+        # Add html header to the chapter
+        chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>\n'.format(chapterTitle)
+        chapter += str(content)
+        if hasSpoiler != None:
+            chapter += "<strong>The chapter name is: {}</strong>".format(hasSpoiler)
+        
+        # Return the chapter as a BeautifulSoup html object
+        return BeautifulSoup(chapter, "html.parser")
+
+
+if __name__ == "__main__":
+    pass
