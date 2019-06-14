@@ -3,16 +3,26 @@ import NovelParsers
 from NovelDownloader import NovelDownloader
 from TKWrapper import TKWrapper
 import threading
+from multiprocessing.pool import ThreadPool
 import uuid
 
 class NovelGUI:
     
     def __init__(self):
         
+        # Set download pool size (how many chapters to download at a time)
+        self.poolSize = 40
+        
         # Create an instance of the Tkinter wrapper and novel website parsers
         self.TKW = TKWrapper("Novel 2 E-Book", 700, 340, "favicon.ico")
-        self.parsers = [parser() for name, parser in inspect.getmembers(NovelParsers, inspect.isclass) if parser.__module__ == 'NovelParsers']
+        parsers = [parser for name, parser in inspect.getmembers(NovelParsers, inspect.isclass) if parser.__module__ == 'NovelParsers']
         self.coverSize = (210,300)
+        self.parsers = []
+        def initialiseParsers(parser):
+            self.parsers.append(parser())
+            print("Loaded: {}".format(parser))
+        with ThreadPool(self.poolSize) as pool:
+            pool.map(initialiseParsers, parsers, chunksize=1)
         
         # Get the book names and select which parser to use
         self.selectedParser = None
@@ -20,6 +30,7 @@ class NovelGUI:
         for parser in self.parsers:
             novels.extend(parser.getNovelNames())
         novels.sort()
+        print("Approx {} novels available".format(len(novels)))
         self.selectParser(novels[0])
         
         # Create all UI elements
@@ -52,11 +63,9 @@ class NovelGUI:
         self.progressTrack = 0
         self.progressTrackID = None
         
-        # Set download pool size (how many chapters to download at a time)
-        self.poolSize = 40
         
         # Set the update interval
-        self.updateInterval = 100
+        self.updateInterval = 50
         self.updateGUI()
         
         # Launch the GUI
@@ -152,9 +161,10 @@ class NovelGUI:
             return False
         
     def updateGUI(self):
+    
         self.TKW.guiElements["ProgressBar"]['value']=self.progressTrack
         self.TKW.app.after(self.updateInterval, self.updateGUI)
-        #self.TKW.app.update()
+        
     
     def onCancelButtonClick(self):
         
