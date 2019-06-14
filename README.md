@@ -14,6 +14,7 @@ To run this script you'll need to have Python 3.7.x installed which you can find
     - [WuxiaWorld](https://www.wuxiaworld.com)
     - [Gravity Tales](https://gravitytales.com)
     - [Volare Novels](https://www.volarenovels.com)
+    - [Totally Translations](https://totallytranslations.com/)
 - Automatically adds some metadata like title, cover, and author (translator used as author as it was easier to implement)
 - Concurrent download of chapters - *significantly* faster download of books
 
@@ -51,14 +52,7 @@ If you make any changes to the source and want to package it up, just run the in
 
 ## Keep in mind!
 
-If you come across bugs or suggestions for future updates don't hesitate to open up a "new issue" in the issue tab or write me an email at [andriux19960823@gmail.com](mailto:andriux19960823@gmail.com).
-
-
-### Planned features and updates
-
-- Cover editing and custom covers
-- More ebook formats
-- More websites
+There are currently no plans to add any more features or websites to this project but if you have suggestions for future updates or come across any bugs don't hesitate to open up a "new issue" in the issue tab or write me an email at [andriux19960823@gmail.com](mailto:andriux19960823@gmail.com).
 
 ## License
 
