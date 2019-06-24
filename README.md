@@ -1,8 +1,10 @@
 
 # Novel 2 E-Book
-This Python program will download books and chapters from novels availaible on several websites and saves them as .epub ebooks. About 150 books available as in the latest release.
+This Python program will download books and chapters from novels on [Read Light Novel](https://www.readlightnovel.org/) website and saves them as .epub ebooks. About **_3500_ novels** available as of the latest release. 
 
-Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the same functionality but with over 2000 supported novels made by [MakeYourLifeEasier](https://github.com/MakeYourLifeEasier). Beware this site is still in beta and you may experience problems. 
+**Please note that the quality of the formatting is worse than what you could get with the Master branch. The only reason for this program is for downloading novels that are not in the Master branch!**
+
+Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the same functionality but with about 2000 supported novels made by [MakeYourLifeEasier](https://github.com/MakeYourLifeEasier). Beware this site is still in beta and you may experience problems. 
 
 ## Getting Started
 
@@ -10,12 +12,8 @@ To run this script you'll need to have Python 3.7.x installed which you can find
 
 ### Features
 
-- Download your favourite novels from as .epub books from:
-    - [WuxiaWorld](https://www.wuxiaworld.com)
-    - [Gravity Tales](https://gravitytales.com)
-    - [Volare Novels](https://www.volarenovels.com)
-    - [Totally Translations](https://totallytranslations.com/)
-- Automatically adds some metadata like title, cover, and author (translator used as author as it was easier to implement)
+- Download your favourite novels from as .epub books from [Read Light Novel](https://www.readlightnovel.org/) website
+- Automatically adds some metadata like title and cover
 - Concurrent download of chapters - *significantly* faster download of books
 
 ### Usage
