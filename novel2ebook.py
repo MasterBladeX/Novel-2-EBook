@@ -102,9 +102,9 @@ class NovelGUI:
         
         # Set the selected items in both comboboxes to the first element
         self.TKW.guiElements["BookCombobox"][1].current(0)
-        self.TKW.guiElements["EndCombobox"][1].current(0)
+        if self.TKW.guiElements["ChaptersOnly"][0].get():
+            self.TKW.guiElements["EndCombobox"][1].current(0)
         
-    
     
     def onBookFieldChange(self, index, value, op):
         
@@ -130,7 +130,6 @@ class NovelGUI:
             else:
                 self.TKW.guiElements["EndCombobox"][1].current(0)
         
-    
     
     def onChapterCheckboxChange(self):
         
