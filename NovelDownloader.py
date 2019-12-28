@@ -8,7 +8,9 @@ class NovelDownloader:
         
         # Download and clean all of the chapters
         chapterLinks = parser.getNovelChapterLinks(novelName)
+        chapterLinks = list(dict.fromkeys(chapterLinks))
         chapterLinks = list(enumerate(chapterLinks[startChapter:endChapter+1]))
+        
         pot_of_soup = [None]*len(chapterLinks)
         if callback == None:
             def callback(id):
@@ -38,6 +40,8 @@ class NovelDownloader:
         
         # Download and clean all of the chapters
         chapterLinks = parser.getNovelChapterLinks(novelName)
+        chapterLinks = list(dict.fromkeys(chapterLinks))
+        
         pot_of_soup = []
         if callback == None:
             def callback(id):
