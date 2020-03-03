@@ -36,7 +36,6 @@ class WuxiaWorldParser:
         self.novels["Nine Star Hegemon Body Art"] = ["https://www.wuxiaworld.com/novel/nine-star-hegemon","https://cdn.wuxiaworld.com/images/covers/nshba.jpg","BornToBe","NSHBA"]
         self.novels["Dragon Prince Yuan"] = ["https://www.wuxiaworld.com/novel/dragon-prince-yuan","https://cdn.wuxiaworld.com/images/covers/yz.jpg","Yellowlaw","DPY"]
         self.novels["Coiling Dragon"] = ["https://www.wuxiaworld.com/novel/coiling-dragon-preview","https://cdn.wuxiaworld.com/images/covers/cdp.jpg","RWX","CDP"]
-        self.novels["Dragon Talisman"][0] = "https://www.wuxiaworld.com/preview/dragon-talisman"
 
         
         self.novelSypnoses["Trash of the Count's Family"] = "N/A"
