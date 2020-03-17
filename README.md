@@ -1,6 +1,6 @@
 
 # Novel 2 E-Book
-This Python program will download books and chapters from novels availaible on several websites and saves them as .epub ebooks. About 150 books available as in the latest release.
+This Python program will download books and chapters from novels availaible on several websites and saves them as .epub ebooks. About 180 books available as of the latest release (newly added novels should also show up without requiring any updates to the program!).
 
 Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the same functionality but with over 2000 supported novels made by [MakeYourLifeEasier](https://github.com/MakeYourLifeEasier). Beware this site is still in beta and you may experience problems. 
 
@@ -15,8 +15,8 @@ To run this script you'll need to have Python 3.7.x installed which you can find
     - [Gravity Tales](https://gravitytales.com)
     - [Volare Novels](https://www.volarenovels.com)
     - [Totally Translations](https://totallytranslations.com/)
-- Automatically adds some metadata like title, cover, and author (translator used as author as it was easier to implement)
-- Concurrent download of chapters - *significantly* faster download of books
+- Automatically adds some metadata like title and cover
+- Concurrent download of chapters - *significantly* faster download of books than just downloading them one by one (I'm talking an order or 2 of magnitudes faster)
 
 ### Usage
 
