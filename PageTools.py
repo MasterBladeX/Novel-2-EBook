@@ -1,5 +1,6 @@
 import urllib
 import urllib.request
+import requests
 from bs4 import BeautifulSoup
 import ssl
 import json
@@ -26,11 +27,17 @@ class PageTools():
     
     def getJsonFromUrl(self, url):
     
-        # Download the JSON stored in the url
+        # Download the JSON from the url url
         response = self.downloadPage(url).decode('utf8')
         jsonFile = json.loads(response)
         return jsonFile
     
+    def getJsonFromPost(self, url, jsonPayload):
+        
+        # Do a POST request to get the JSON file back
+        response = requests.post(url, json = json.loads(jsonPayload))
+        jsonFile = json.loads(response.text)
+        return jsonFile
     
     def getSoupFromUrl(self, url):
         

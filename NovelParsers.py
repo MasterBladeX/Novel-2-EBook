@@ -3,6 +3,8 @@ from PageTools import PageTools
 from PIL import Image
 from io import BytesIO
 import re
+import requests
+import json
 
 noCoverLink = "http://admin.johnsons.net/janda/files/flipbook-coverpage/nocoverimg.jpg"
 
@@ -13,7 +15,10 @@ class WuxiaWorldParser:
         self.url = "https://www.wuxiaworld.com"
         
         # Download and parse the WuxiaWorld API JSON file
-        self.jsonFile = PageTools().getJsonFromUrl(self.url+"/api/novels")
+        url = self.url+"/api/novels/search"
+        payload = '{"title":"","tags":[],"language":"Any","genres":[],"active":null,"sortType":"Name","sortAsc":false,"searchAfter":null,"count":500}'
+        self.jsonFile = PageTools().getJsonFromPost(url,payload)
+        
         self.novels = None
         self.novelNames = None
         self.novelSypnoses = None
@@ -28,23 +33,23 @@ class WuxiaWorldParser:
     
     
     def insertSpecialCases(self):
-        
-        self.novels["Trash of the Count's Family"] = ["https://www.wuxiaworld.com/novel/trash-of-the-counts-family","https://cdn.wuxiaworld.com/images/covers/tcf.jpg","miraclerifle","TCF"]
-        self.novels["The Novel's Extra"] = ["https://www.wuxiaworld.com/novel/the-novels-extra","https://cdn.wuxiaworld.com/images/covers/tne.jpg","FudgeNouget","TNE"]
-        self.novels["Stop, Friendly Fire!"] = ["https://www.wuxiaworld.com/novel/stop-friendly-fire","https://cdn.wuxiaworld.com/images/covers/sff.jpg","Boko","SFF"]
-        self.novels["Sage Monarch"] = ["https://www.wuxiaworld.com/novel/sage-monarch","https://cdn.wuxiaworld.com/images/covers/sm.jpg","Deathblade","SM"]
-        self.novels["Nine Star Hegemon Body Art"] = ["https://www.wuxiaworld.com/novel/nine-star-hegemon","https://cdn.wuxiaworld.com/images/covers/nshba.jpg","BornToBe","NSHBA"]
-        self.novels["Dragon Prince Yuan"] = ["https://www.wuxiaworld.com/novel/dragon-prince-yuan","https://cdn.wuxiaworld.com/images/covers/yz.jpg","Yellowlaw","DPY"]
-        self.novels["Coiling Dragon"] = ["https://www.wuxiaworld.com/novel/coiling-dragon-preview","https://cdn.wuxiaworld.com/images/covers/cdp.jpg","RWX","CDP"]
+        pass
+        # self.novels["Trash of the Count's Family"] = ["https://www.wuxiaworld.com/novel/trash-of-the-counts-family","https://cdn.wuxiaworld.com/images/covers/tcf.jpg","miraclerifle","TCF"]
+        # self.novels["The Novel's Extra"] = ["https://www.wuxiaworld.com/novel/the-novels-extra","https://cdn.wuxiaworld.com/images/covers/tne.jpg","FudgeNouget","TNE"]
+        # self.novels["Stop, Friendly Fire!"] = ["https://www.wuxiaworld.com/novel/stop-friendly-fire","https://cdn.wuxiaworld.com/images/covers/sff.jpg","Boko","SFF"]
+        # self.novels["Sage Monarch"] = ["https://www.wuxiaworld.com/novel/sage-monarch","https://cdn.wuxiaworld.com/images/covers/sm.jpg","Deathblade","SM"]
+        # self.novels["Nine Star Hegemon Body Art"] = ["https://www.wuxiaworld.com/novel/nine-star-hegemon","https://cdn.wuxiaworld.com/images/covers/nshba.jpg","BornToBe","NSHBA"]
+        # self.novels["Dragon Prince Yuan"] = ["https://www.wuxiaworld.com/novel/dragon-prince-yuan","https://cdn.wuxiaworld.com/images/covers/yz.jpg","Yellowlaw","DPY"]
+        # self.novels["Coiling Dragon"] = ["https://www.wuxiaworld.com/novel/coiling-dragon-preview","https://cdn.wuxiaworld.com/images/covers/cdp.jpg","RWX","CDP"]
 
         
-        self.novelSypnoses["Trash of the Count's Family"] = "N/A"
-        self.novelSypnoses["The Novel's Extra"] = "N/A"
-        self.novelSypnoses["Stop, Friendly Fire!"] = "N/A"
-        self.novelSypnoses["Sage Monarch"] = "N/A"
-        self.novelSypnoses["Nine Star Hegemon Body Art"] = "N/A"
-        self.novelSypnoses["Dragon Prince Yuan"] = "N/A"
-        self.novelSypnoses["Coiling Dragon"] = "N/A"
+        # self.novelSypnoses["Trash of the Count's Family"] = "N/A"
+        # self.novelSypnoses["The Novel's Extra"] = "N/A"
+        # self.novelSypnoses["Stop, Friendly Fire!"] = "N/A"
+        # self.novelSypnoses["Sage Monarch"] = "N/A"
+        # self.novelSypnoses["Nine Star Hegemon Body Art"] = "N/A"
+        # self.novelSypnoses["Dragon Prince Yuan"] = "N/A"
+        # self.novelSypnoses["Coiling Dragon"] = "N/A"
         
     
     def parseNovelList(self):
@@ -58,7 +63,7 @@ class WuxiaWorldParser:
             return True
         
         # Extract the required novel info
-        self.novels = {novel['name']:[self.url+"/novel/"+novel['slug'], novel['coverUrl'], novel['translatorUserName']] for novel in self.jsonFile['items']}
+        self.novels = {novel['name']:[self.url+"/novel/"+novel['slug'], novel['coverUrl'], novel['id']] for novel in self.jsonFile['items']}
         self.novelSypnoses = {novel['name']:(novel['sypnosis'] if checkForSypnosis(novel) else "N/A") for novel in self.jsonFile['items']}
         
         self.insertSpecialCases()
@@ -383,6 +388,10 @@ class VolareNovelsParser:
         
         # Download and parse the Volare Novels API JSON file
         self.jsonFile = PageTools().getJsonFromUrl(self.url+"/api/novels")
+        # url = self.url+"/api/novels/search"
+        # payload = '{"title":"","language":null,"tags":[],"active":null,"sortType":"Name","sortAsc":true,"searchAfter":null,"count":500}'
+        # self.jsonFile = PageTools().getJsonFromPost(url,payload)
+        
         self.novels = None
         self.novelNames = None
         self.novelSypnoses = None
