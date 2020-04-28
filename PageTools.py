@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 import ssl
 import json
 
+browserHeader = {'User-Agent': 'Mozilla/5.0 (Macintosh;Intel Mac OS X 10_9_3)'+\
+                                        ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'}
 
 class PageTools():
 
@@ -12,8 +14,7 @@ class PageTools():
         
         # Fake browser headers
         ssl._create_default_https_context = ssl._create_unverified_context
-        urlReq = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh;Intel Mac OS X 10_9_3)'+\
-                                        ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
+        urlReq = urllib.request.Request(url, headers=browserHeader)
         
         # Open url, read the response and return it, attempty
         for i in range(attempts):
@@ -35,7 +36,7 @@ class PageTools():
     def getJsonFromPost(self, url, jsonPayload):
         
         # Do a POST request to get the JSON file back
-        response = requests.post(url, json = json.loads(jsonPayload))
+        response = requests.post(url, json = json.loads(jsonPayload), headers=browserHeader)
         jsonFile = json.loads(response.text)
         return jsonFile
     
