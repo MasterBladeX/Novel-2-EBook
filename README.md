@@ -15,6 +15,7 @@ To run this script you'll need to have Python 3.x.x installed which you can find
     - [Gravity Tales](https://gravitytales.com)
     - [Volare Novels](https://www.volarenovels.com)
     - [Totally Translations](https://totallytranslations.com/)
+	- [Novelle Leggere](https://www.novelleleggere.com/)
 - Automatically adds some metadata like title and cover
 - Concurrent download of chapters - *significantly* faster download of books than just downloading them one by one (I'm talking an order or 2 of magnitudes faster)
 

@@ -40,10 +40,10 @@ class PageTools():
         jsonFile = json.loads(response.text)
         return jsonFile
     
-    def getSoupFromUrl(self, url):
+    def getSoupFromUrl(self, url, parser = 'html.parser'):
         
         # Parse the webpage response with the HTML parset
-        soup = BeautifulSoup(self.downloadPage(url), 'html.parser')
+        soup = BeautifulSoup(self.downloadPage(url), parser)
         return soup
     
     
@@ -120,7 +120,7 @@ class PageTools():
         return elementList
     
     
-    def getElementsFromUrl(self, url, elementRecursiveList, findAllEnableList = True, onlyText = False, recursionIndex = 0):
+    def getElementsFromUrl(self, url, elementRecursiveList, findAllEnableList = True, onlyText = False, recursionIndex = 0, parser = 'html.parser'):
         
         # Get the requested elements directly from the url
-        return self.getElementsFromSoup(self.getSoupFromUrl(url), elementRecursiveList, findAllEnableList, onlyText, recursionIndex)
+        return self.getElementsFromSoup(self.getSoupFromUrl(url, parser), elementRecursiveList, findAllEnableList, onlyText, recursionIndex)
