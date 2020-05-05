@@ -14,18 +14,26 @@ class WuxiaWorldParser:
         
         self.url = "https://www.wuxiaworld.com"
         
-        # Download and parse the WuxiaWorld API JSON file
-        url = self.url+"/api/novels/search"
-        payload = '{"title":"","tags":[],"language":"Any","genres":[],"active":null,"sortType":"Name","sortAsc":false,"searchAfter":null,"count":500}'
-        self.jsonFile = PageTools().getJsonFromPost(url,payload)
+        self.name = "Wuxia World"
         
+        self.jsonFile = None
         self.novels = None
         self.novelNames = None
         self.novelSypnoses = None
-        self.parseNovelList()
-        
+        self.isLoaded = False
+
         # Container for all novels that are requested
         self.novelLibrary = {}
+    
+    
+    def load(self):
+        if not self.isLoaded:
+            # Download and parse the WuxiaWorld API JSON file
+            url = self.url+"/api/novels/search"
+            payload = '{"title":"","tags":[],"language":"Any","genres":[],"active":null,"sortType":"Name","sortAsc":false,"searchAfter":null,"count":500}'
+            self.jsonFile = PageTools().getJsonFromPost(url,payload)
+            self.parseNovelList()
+            self.isLoaded = True
     
     
     def clearNovelCache(self):
@@ -146,6 +154,7 @@ class WuxiaWorldParser:
     
     def getNovelNames(self):
         
+        self.load()
         return self.novelNames
     
     
@@ -234,14 +243,20 @@ class GravityTalesParser:
         
         self.url = "https://gravitytales.com"
         
+        self.name = "Gravity Tales"
+        
         # Initialise variables
         self.novels = {}
         self.novelNames = []
         #self.novelSypnoses = None
-        self.parseNovelList()
-        
+        self.isLoaded = False
+
         # Container for all novels that are requested
         self.novelLibrary = {}
+    
+    def load(self):
+        self.parseNovelList()
+        self.isLoaded = True
     
     
     def clearNovelCache(self):
@@ -315,6 +330,7 @@ class GravityTalesParser:
     
     def getNovelNames(self):
         
+        self.load()
         return self.novelNames
     
     
@@ -386,8 +402,10 @@ class VolareNovelsParser:
         
         self.url = "https://www.volarenovels.com"
         
+        self.name = "Volare Novels"
+        
         # Download and parse the Volare Novels API JSON file
-        self.jsonFile = PageTools().getJsonFromUrl(self.url+"/api/novels")
+        self.jsonFile = None
         # url = self.url+"/api/novels/search"
         # payload = '{"title":"","language":null,"tags":[],"active":null,"sortType":"Name","sortAsc":true,"searchAfter":null,"count":500}'
         # self.jsonFile = PageTools().getJsonFromPost(url,payload)
@@ -395,10 +413,17 @@ class VolareNovelsParser:
         self.novels = None
         self.novelNames = None
         self.novelSypnoses = None
-        self.parseNovelList()
+        self.isLoaded = False
         
         # Container for all novels that are requested
         self.novelLibrary = {}
+    
+    
+    def load(self):
+        if not self.isLoaded:
+            self.jsonFile = PageTools().getJsonFromUrl(self.url+"/api/novels")
+            self.parseNovelList()
+            self.isLoaded = True
     
     
     def clearNovelCache(self):
@@ -472,6 +497,7 @@ class VolareNovelsParser:
     
     def getNovelNames(self):
         
+        self.load()
         return self.novelNames
     
     
@@ -560,15 +586,23 @@ class TotallyTranslationsParser:
         
         self.url = "https://totallytranslations.com"
         
+        self.name = "Totally Translations"
+        
         # Create containers
         self.novels = {}
         self.novelNames = None
         # self.novelSypnoses = None
-        self.parseNovelList()
+        self.isLoaded = False
         
         # Container for all novels that are requested
         self.novelLibrary = {}
     
+    
+    def load(self):
+        if not self.isLoaded:
+            self.parseNovelList()
+            self.isLoaded = True
+        
     
     def clearNovelCache(self):
         self.novelLibrary = {}
@@ -629,6 +663,7 @@ class TotallyTranslationsParser:
     
     def getNovelNames(self):
         
+        self.load()
         return self.novelNames
     
     

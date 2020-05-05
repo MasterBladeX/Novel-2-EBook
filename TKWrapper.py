@@ -100,7 +100,7 @@ class TKWrapper():
         self.guiElements[elementName] = [boolVar, checkbutton]
     
     
-    def createCombobox(self, elementName, column, initialData=None, kwargs={}, kwargs2={}, varFunction = None):
+    def createCombobox(self, elementName, column, initialData=None, kwargs={}, kwargs2={}, varFunction = None, initialSelection = None):
         
         self.appendColumn(column)
         
@@ -116,7 +116,13 @@ class TKWrapper():
         # If data was input, store it in the combobox
         if initialData != None:
             combobox["values"] = initialData
-            combobox.current(0)
+            if initialSelection == None:
+                combobox.current(0)
+            else:
+                try:
+                    combobox.current(initialData.index(initialSelection))
+                except:
+                    combobox.current(0)
         
         # Manage rows
         if 'rowspan' in kwargs2.keys():

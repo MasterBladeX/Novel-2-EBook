@@ -15,30 +15,25 @@ class NovelGUI:
         
         # Create an instance of the Tkinter wrapper and novel website parsers
         self.TKW = TKWrapper("Novel 2 E-Book", 700, 340, "favicon.ico")
-        # Load each of the parser classes in the NovelParsers module
-        parsers = [parser for name, parser in inspect.getmembers(NovelParsers, inspect.isclass) if parser.__module__ == 'NovelParsers']
         self.coverSize = (210,300)
-        self.parsers = []
-        def initialiseParsers(parser):
-            self.parsers.append(parser())
-            print("Loaded: {}".format(parser))
-        with ThreadPool(self.poolSize) as pool:
-            pool.map(initialiseParsers, parsers, chunksize=1)
         
-        # Get the book names and select which parser to use
-        self.selectedParser = None
-        novels = []
-        for parser in self.parsers:
-            novels.extend(parser.getNovelNames())
+        # Load each of the parser classes in the NovelParsers module
+        self.parsers = [parser() for name, parser in inspect.getmembers(NovelParsers, inspect.isclass) if parser.__module__ == 'NovelParsers']
+        self.parsers = {parser.name:parser for parser in self.parsers}
+        sites = list(self.parsers.keys())
+        
+        # Wuxia world selected by default
+        self.selectedParser = self.parsers["Wuxia World"]
+        novels = self.selectedParser.getNovelNames()
         novels.sort()
-        print("Approx {} novels available".format(len(novels)))
-        self.selectParser(novels[0])
         
         # Create all UI elements
+        self.TKW.createLabel("SiteLabel", "Select Website: ", 0, {"pady":10, "padx":10, "sticky":"W"})
         self.TKW.createLabel("NovelLabel", "Select Novel: ", 0, {"pady":10, "padx":10, "sticky":"W"})
         self.TKW.createLabel("BookLabel", "Select Book: ", 0, {"pady":10, "padx":10, "sticky":"W"})
         self.TKW.createLabel("EndLabel", "Select Ending Chapter: ", 0, {"pady":10, "padx":10, "sticky":"W"})
         self.TKW.createLabel("ChaptersOnlyLabel", "Download separate chapters: ", 0, {"pady":10, "padx":10, "sticky":"W"})
+        self.TKW.createCombobox("SiteCombobox", 1, sites, {"width":42}, initialSelection="Wuxia World")
         self.TKW.createCombobox("NovelCombobox", 1, novels, {"width":42})
         self.TKW.createCombobox("BookCombobox", 1, self.selectedParser.getNovelBookNames(novels[0]), {"width":42})
         self.TKW.createCombobox("EndCombobox", 1, self.selectedParser.getNovelBookNames(novels[0]), {"width":42})
@@ -51,6 +46,7 @@ class NovelGUI:
         self.stopDownload = False
         
         # Attach functions after creating the comboboxes to prevent errors on startup
+        self.TKW.guiElements["SiteCombobox"][0].trace("w", self.onSiteFieldChange)
         self.TKW.guiElements["NovelCombobox"][0].trace("w", self.onNovelFieldChange)
         self.TKW.guiElements["BookCombobox"][0].trace("w", self.onBookFieldChange)
         
@@ -73,22 +69,23 @@ class NovelGUI:
         self.TKW.begin()
     
     
-    def selectParser(self, novel):
+    def onSiteFieldChange(self, index, value, op):
         
-        # Check which parser the novel comes from select that parser
-        for parser in self.parsers:
-            if novel in parser.getNovelNames():
-                self.selectedParser = parser
-                break
-    
+        # Get the selected parser and set to active
+        self.selectedParser = self.parsers[self.TKW.guiElements["SiteCombobox"][0].get()]
+        novels = self.selectedParser.getNovelNames()
+        novels.sort()
+        self.TKW.guiElements["NovelCombobox"][1]["values"] = novels
+        self.TKW.guiElements["NovelCombobox"][1].current(0)
+        
+        
     
     def onNovelFieldChange(self, index, value, op):
         
         # Get the selected novel name and replace the image accordingly
         novel = self.TKW.guiElements["NovelCombobox"][0].get()
         
-        # Figure out which parser to use
-        self.selectParser(novel)
+        # Set Cover image
         self.coverImage = self.selectedParser.getImagePillow(novel)
         self.coverImage.thumbnail(self.coverSize)
         self.TKW.replaceImage("CoverImage", self.coverImage)
