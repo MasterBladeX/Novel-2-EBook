@@ -4,7 +4,7 @@ from multiprocessing.pool import ThreadPool
 
 class NovelDownloader:
 
-    def generateBookFromToMulti(parser, novelName, startChapter, endChapter, customCoverFilename = None, customBookName = None, callback=None, poolSize = 50, idnum = None):
+    def generateBookFromToMulti(parser, novelName, startChapter, endChapter, customCoverFilename = None, customBookName = None, callback=None, poolSize = 50, idnum = None, bsParser = None):
         
         # Download and clean all of the chapters
         chapterLinks = parser.getNovelChapterLinks(novelName)
@@ -16,7 +16,10 @@ class NovelDownloader:
             def callback(id):
                 return False
         def downloadPage(link):
-            pot_of_soup[link[0]] = PageTools().getSoupFromUrl(link[1])
+            if bsParser == None:
+                pot_of_soup[link[0]] = PageTools().getSoupFromUrl(link[1])
+            else:
+                pot_of_soup[link[0]] = PageTools().getSoupFromUrl(link[1], parser = bsParser)
             if callback(idnum):
                 raise RuntimeError("Process terminated")
         with ThreadPool(poolSize) as pool:
@@ -36,7 +39,7 @@ class NovelDownloader:
             EBookGenerator().generateEBook(chapters, novelName, "{}-{}".format(startChapter+1, endChapter+1), parser.novels[novelName][2], image)
     
     
-    def generateBookFromTo(parser, novelName, startChapter, endChapter, customCoverFilename = None, customBookName = None, callback=None, idnum = None):
+    def generateBookFromTo(parser, novelName, startChapter, endChapter, customCoverFilename = None, customBookName = None, callback=None, idnum = None, bsParser = None):
         
         # Download and clean all of the chapters
         chapterLinks = parser.getNovelChapterLinks(novelName)
@@ -47,7 +50,10 @@ class NovelDownloader:
             def callback(id):
                 return False
         for link in chapterLinks[startChapter:endChapter+1]:
-            pot_of_soup.append(PageTools().getSoupFromUrl(link))
+            if bsParser == None:
+                pot_of_soup.append(PageTools().getSoupFromUrl(link))
+            else:
+                pot_of_soup.append(PageTools().getSoupFromUrl(link, parser = bsParser))
             callback(idnum)
         chapters = [parser.cleanChapter(soup) for soup in pot_of_soup]
         
@@ -64,7 +70,7 @@ class NovelDownloader:
             EBookGenerator().generateEBook(chapters, novelName, "{}-{}".format(startChapter+1, endChapter+1), parser.novels[novelName][2], image)
     
     
-    def generateBookMulti(parser, novelName, bookName, customCoverFilename = None, customBookName = None, callback=None, poolSize = 50, idnum = None):
+    def generateBookMulti(parser, novelName, bookName, customCoverFilename = None, customBookName = None, callback=None, poolSize = 50, idnum = None, bsParser = None):
         
         # Download and clean all of the chapters in the book
         chapterLinks = parser.getNovelBookChapterLinks(novelName, bookName)
@@ -74,7 +80,10 @@ class NovelDownloader:
             def callback(id):
                 return False
         def downloadPage(link):
-            pot_of_soup[link[0]] = PageTools().getSoupFromUrl(link[1])
+            if bsParser == None:
+                pot_of_soup[link[0]] = PageTools().getSoupFromUrl(link[1])
+            else:
+                pot_of_soup[link[0]] = PageTools().getSoupFromUrl(link[1], parser = bsParser)
             if callback(idnum):
                 raise RuntimeError("Process terminated")
         with ThreadPool(poolSize) as pool:
@@ -94,7 +103,7 @@ class NovelDownloader:
             EBookGenerator().generateEBook(chapters, novelName, bookName, parser.novels[novelName][2], image)
     
     
-    def generateBook(parser, novelName, bookName, customCoverFilename = None, customBookName = None, callback=None, idnum = None):
+    def generateBook(parser, novelName, bookName, customCoverFilename = None, customBookName = None, callback=None, idnum = None, bsParser = None):
         
         # Download and clean all of the chapters in the book
         chapterLinks = parser.getNovelBookChapterLinks(novelName, bookName)
@@ -103,7 +112,10 @@ class NovelDownloader:
             def callback(id):
                 return False
         for link in chapterLinks:
-            pot_of_soup.append(PageTools().getSoupFromUrl(link))
+            if bsParser == None:
+                pot_of_soup.append(PageTools().getSoupFromUrl(link))
+            else:
+                pot_of_soup.append(PageTools().getSoupFromUrl(link, parser = bsParser))
             callback(idnum)
         chapters = [parser.cleanChapter(soup) for soup in pot_of_soup]
         
@@ -120,7 +132,7 @@ class NovelDownloader:
             EBookGenerator().generateEBook(chapters, novelName, bookName, parser.novels[novelName][2], image)
     
     
-    def generateBooks(parser, novelName, bookNames, customCoverFilename = None, customBookNames = None, callback=None, idnum = None):
+    def generateBooks(parser, novelName, bookNames, customCoverFilename = None, customBookNames = None, callback=None, idnum = None, bsParser = None):
         
         # If no custom book names are input, fill the input list with None objects
         if customBookNames == None:
@@ -128,5 +140,5 @@ class NovelDownloader:
         
         # Download each book separately
         for bookName, customBookName in zip(bookNames, customBookNames):
-            self.generateBook(parser, novelName, bookNames, customCoverFilename, customBookName, callback, idnum)
+            self.generateBook(parser, novelName, bookNames, customCoverFilename, customBookName, callback, idnum, bsParser)
 

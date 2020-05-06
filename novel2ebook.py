@@ -184,7 +184,7 @@ class NovelGUI:
             self.TKW.guiElements["ProgressBar"].config(mode="determinate", maximum = endChapter-startChapter+1, value = 0)
             self.newThread = threading.Thread(target=NovelDownloader.generateBookFromToMulti, args=(self.selectedParser,\
                                               novel, startChapter, endChapter), kwargs={"callback":self.updateProgresstrack,\
-                                              "poolSize":self.poolSize, "idnum":self.progressTrackID})
+                                              "poolSize":self.poolSize, "idnum":self.progressTrackID, "bsParser":self.selectedParser.bsParser})
             self.newThread.start()
             #NovelDownloader.generateBookFromToMulti(self.selectedParser, novel, startChapter, endChapter, callback = self.updateProgresstrack)
         else:
@@ -192,7 +192,7 @@ class NovelGUI:
             self.TKW.guiElements["ProgressBar"].config(mode="determinate", maximum = len(chapterList), value = 0)
             self.newThread = threading.Thread(target=NovelDownloader.generateBookMulti, args=(self.selectedParser,\
                                               novel, self.TKW.guiElements["BookCombobox"][0].get()), kwargs={"callback":self.updateProgresstrack,\
-                                              "poolSize":self.poolSize, "idnum":self.progressTrackID})
+                                              "poolSize":self.poolSize, "idnum":self.progressTrackID, "bsParser":self.selectedParser.bsParser})
             self.newThread.start()
             #NovelDownloader.generateBook(self.selectedParser, novel, self.TKW.guiElements["BookCombobox"][0].get(), callback = self.updateProgresstrack)
     

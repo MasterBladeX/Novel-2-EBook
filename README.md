@@ -1,8 +1,8 @@
 
 # Novel 2 E-Book
-This Python program will download books and chapters from novels availaible on several websites and saves them as .epub ebooks. About 180 books available as of the latest release (newly added novels should also show up without requiring any updates to the program!).
+This Python program will download books and chapters from novels availaible on several websites and saves them as .epub ebooks. About **200** books as of the latest release from direct sources with *__several thousand__* available from Read Light Novel site (newly added novels should also show up without requiring any updates to the program!).
 
-Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the same functionality but with over 2000 supported novels made by [MakeYourLifeEasier](https://github.com/MakeYourLifeEasier). Beware this site is still in beta and you may experience problems. 
+Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the same functionality made by [MakeYourLifeEasier](https://github.com/MakeYourLifeEasier).
 
 ## Getting Started
 
@@ -16,6 +16,7 @@ To run this script you'll need to have Python 3.x.x installed which you can find
     - [Volare Novels](https://www.volarenovels.com)
     - [Totally Translations](https://totallytranslations.com/)
 	- [Novelle Leggere](https://www.novelleleggere.com/)
+	- [Read Light Novel](https://www.readlightnovel.org/) *initial load time for this is slow due to the sheer amount of novels* **also, poor quality formatting**
 - Automatically adds some metadata like title and cover
 - Concurrent download of chapters - *significantly* faster download of books than just downloading them one by one (I'm talking an order or 2 of magnitudes faster)
 
@@ -39,7 +40,7 @@ path/where/you/installed/python.exe novel2ebook.py
 
 ### Prerequisites
 
-As mentioned before this script was written for Python version 3.7.x. It may work with other versions too but none are tested.
+As mentioned before this script was written for Python version 3.x.x. It may work with other versions too but none are tested.
 Additionally the Python image library (Pillow), lxml, and BeautifulSoup4 are required.
 To install all dependencies just use the console to navigate into the project folder and write
 
