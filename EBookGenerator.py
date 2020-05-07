@@ -5,7 +5,7 @@ from pathlib import Path
 def generateEBook(htmlFiles, novelName, bookName, author, coverImage):
     
     # Replace invalid characters with spaces
-    for character in "\\/<>|:*\"?":
+    for character in "\\/<>|:*\"?\n":
         novelName = novelName.replace(character, " ")
         bookName = bookName.replace(character, " ")
     

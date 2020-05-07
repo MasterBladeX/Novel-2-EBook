@@ -5,6 +5,7 @@ from io import BytesIO
 import re
 import requests
 import json
+import gc
 
 noCoverLink = "http://admin.johnsons.net/janda/files/flipbook-coverpage/nocoverimg.jpg"
 
@@ -227,13 +228,17 @@ class WuxiaWorldParser:
             a.decompose()
         
         # Add html header to the chapter
-        #chapter = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html>\n\n"
         chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>\n'.format(chapterTitle)
-        #print(str(content))
         chapter += str(content)
         if hasSpoiler != None:
             chapter += "<strong>The chapter name is: {}</strong>".format(hasSpoiler)
-        #chapter += "</body>\n</html>"
+        
+        # Collect some garbage to reduce RAM usage
+        soup = None
+        chapterTitle = None
+        content = None
+        gc.collect()
+        
         # Return the chapter as a BeautifulSoup html object
         return BeautifulSoup(chapter, "html.parser")
 
@@ -393,6 +398,12 @@ class GravityTalesParser:
         
         chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>'.format(chapterTitle)
         chapter += str(content.decode_contents())
+        
+        # Collect some garbage to reduce RAM usage
+        soup = None
+        chapterTitle = None
+        content = None
+        gc.collect()
         
         # Return the chapter as a BeautifulSoup html object
         return BeautifulSoup(chapter, "html.parser")
@@ -567,18 +578,22 @@ class VolareNovelsParser:
         # Remove characters that might corrupt the ebook file
         chapterTitle = chapterTitle.replace("<",'&lt;').replace(">",'&gt;')
         
-        
         for a in content.find_all("a"):
             a.decompose()
         
         # Add html header to the chapter
-        #chapter = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html>\n\n"
         chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>\n'.format(chapterTitle)
-        #print(str(content))
         chapter += str(content)
+        
         if hasSpoiler != None:
             chapter += "<strong>The chapter name is: {}</strong>".format(hasSpoiler)
-        #chapter += "</body>\n</html>"
+        
+        # Collect some garbage to reduce RAM usage
+        soup = None
+        chapterTitle = None
+        content = None
+        gc.collect()
+        
         # Return the chapter as a BeautifulSoup html object
         return BeautifulSoup(chapter, "html.parser")
 
@@ -736,6 +751,12 @@ class TotallyTranslationsParser:
         if hasSpoiler != None:
             chapter += "<strong>The chapter name is: {}</strong>".format(hasSpoiler)
         
+        # Collect some garbage to reduce RAM usage
+        soup = None
+        chapterTitle = None
+        content = None
+        gc.collect()
+        
         # Return the chapter as a BeautifulSoup html object
         return BeautifulSoup(chapter, "html.parser")
 
@@ -890,8 +911,7 @@ class NovelleLeggereParser:
     def cleanChapter(self, soup):
         
         hasSpoiler = None
-        # print(soup)
-        # soup = BeautifulSoup(str(soup), 'lxml')
+        
         # Extract the chapter title and the chapter content
         chapterTitle = soup.find(class_="entry-title fusion-post-title").string
         content = soup.find(class_="post-content")
@@ -915,6 +935,12 @@ class NovelleLeggereParser:
         chapter += str(content)
         if hasSpoiler != None:
             chapter += "<strong>The chapter name is: {}</strong>".format(hasSpoiler)
+        
+        # Collect some garbage to reduce RAM usage
+        soup = None
+        chapterTitle = None
+        content = None
+        gc.collect()
         
         # Return the chapter as a BeautifulSoup html object
         return BeautifulSoup(chapter, "html.parser")
@@ -1076,6 +1102,12 @@ class ReadLightNovelParser:
         # Add html header to the chapter
         chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>\n'.format(chapterTitle)
         chapter += re.sub(" \.", ".", content.decode_contents()).strip("\n"+chapterTitle)
+        
+        # Collect some garbage to reduce RAM usage
+        soup = None
+        chapterTitle = None
+        content = None
+        gc.collect()
         
         # Return the chapter as a BeautifulSoup html object
         return BeautifulSoup(chapter, "html.parser")

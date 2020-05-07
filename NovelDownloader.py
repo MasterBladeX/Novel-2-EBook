@@ -1,6 +1,7 @@
 import PageTools
 import EBookGenerator
 from multiprocessing.pool import ThreadPool
+import gc
 
 def generateBookFromToMulti(parser, novelName, startChapter, endChapter, customCoverFilename = None, customBookName = None, callback=None, poolSize = 50, idnum = None, bsParser = None):
     
@@ -9,20 +10,20 @@ def generateBookFromToMulti(parser, novelName, startChapter, endChapter, customC
     chapterLinks = list(dict.fromkeys(chapterLinks))
     chapterLinks = list(enumerate(chapterLinks[startChapter:endChapter+1]))
     
-    pot_of_soup = [None]*len(chapterLinks)
+    chapters = [None]*len(chapterLinks)
     if callback == None:
         def callback(id):
             return False
     def downloadPage(link):
         if bsParser == None:
-            pot_of_soup[link[0]] = PageTools.getSoupFromUrl(link[1])
+            chapters[link[0]] = parser.cleanChapter(PageTools.getSoupFromUrl(link[1]))
         else:
-            pot_of_soup[link[0]] = PageTools.getSoupFromUrl(link[1], parser = bsParser)
+            chapters[link[0]] = parser.cleanChapter(PageTools.getSoupFromUrl(link[1], parser = bsParser))
         if callback(idnum):
             raise RuntimeError("Process terminated")
+            
     with ThreadPool(poolSize) as pool:
         pool.map(downloadPage, chapterLinks, chunksize=1)
-    chapters = [parser.cleanChapter(soup) for soup in pot_of_soup]
     
     # Download or load the cover image
     if customCoverFilename == None:
@@ -35,6 +36,12 @@ def generateBookFromToMulti(parser, novelName, startChapter, endChapter, customC
         EBookGenerator.generateEBook(chapters, novelName, customBookName, parser.novels[novelName][2], image)
     else:
         EBookGenerator.generateEBook(chapters, novelName, "{}-{}".format(startChapter+1, endChapter+1), parser.novels[novelName][2], image)
+    
+    # Garbage collection to reduce RAM usage
+    chapters = None
+    image = None
+    chapterLinks = None
+    gc.collect()
 
 
 def generateBookFromTo(parser, novelName, startChapter, endChapter, customCoverFilename = None, customBookName = None, callback=None, idnum = None, bsParser = None):
@@ -66,27 +73,35 @@ def generateBookFromTo(parser, novelName, startChapter, endChapter, customCoverF
         EBookGenerator.generateEBook(chapters, novelName, customBookName, parser.novels[novelName][2], image)
     else:
         EBookGenerator.generateEBook(chapters, novelName, "{}-{}".format(startChapter+1, endChapter+1), parser.novels[novelName][2], image)
-
+    
+    # Garbage collection to reduce RAM usage
+    pot_of_soup = None
+    chapters = None
+    image = None
+    chapterLinks = None
+    gc.collect()
+    
 
 def generateBookMulti(parser, novelName, bookName, customCoverFilename = None, customBookName = None, callback=None, poolSize = 50, idnum = None, bsParser = None):
     
     # Download and clean all of the chapters in the book
     chapterLinks = parser.getNovelBookChapterLinks(novelName, bookName)
     chapterLinks = list(enumerate(chapterLinks))
-    pot_of_soup = [None]*len(chapterLinks)
+    chapters = [None]*len(chapterLinks)
+    
     if callback == None:
         def callback(id):
             return False
     def downloadPage(link):
         if bsParser == None:
-            pot_of_soup[link[0]] = PageTools.getSoupFromUrl(link[1])
+            chapters[link[0]] = parser.cleanChapter(PageTools.getSoupFromUrl(link[1]))
         else:
-            pot_of_soup[link[0]] = PageTools.getSoupFromUrl(link[1], parser = bsParser)
+            chapters[link[0]] = parser.cleanChapter(PageTools.getSoupFromUrl(link[1], parser = bsParser))
         if callback(idnum):
             raise RuntimeError("Process terminated")
+    
     with ThreadPool(poolSize) as pool:
         pool.map(downloadPage, chapterLinks, chunksize=1)
-    chapters = [parser.cleanChapter(soup) for soup in pot_of_soup]
     
     # Download or load the cover image
     if customCoverFilename == None:
@@ -99,6 +114,13 @@ def generateBookMulti(parser, novelName, bookName, customCoverFilename = None, c
         EBookGenerator.generateEBook(chapters, novelName, customBookName, parser.novels[novelName][2], image)
     else:
         EBookGenerator.generateEBook(chapters, novelName, bookName, parser.novels[novelName][2], image)
+    
+    # Garbage collection to reduce RAM usage
+    chapters = None
+    image = None
+    chapterLinks = None
+    gc.collect()
+    
 
 
 def generateBook(parser, novelName, bookName, customCoverFilename = None, customBookName = None, callback=None, idnum = None, bsParser = None):
@@ -128,6 +150,13 @@ def generateBook(parser, novelName, bookName, customCoverFilename = None, custom
         EBookGenerator.generateEBook(chapters, novelName, customBookName, parser.novels[novelName][2], image)
     else:
         EBookGenerator.generateEBook(chapters, novelName, bookName, parser.novels[novelName][2], image)
+    
+    # Garbage collection to reduce RAM usage
+    pot_of_soup = None
+    chapters = None
+    image = None
+    chapterLinks = None
+    gc.collect()
 
 
 def generateBooks(parser, novelName, bookNames, customCoverFilename = None, customBookNames = None, callback=None, idnum = None, bsParser = None):
