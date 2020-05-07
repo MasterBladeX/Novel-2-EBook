@@ -1,7 +1,7 @@
 import sys, inspect
 import NovelParsers
-from NovelDownloader import NovelDownloader
-from TKWrapper import TKWrapper
+import NovelDownloader
+import TKWrapper
 import threading
 from multiprocessing.pool import ThreadPool
 import uuid
@@ -14,7 +14,7 @@ class NovelGUI:
         self.poolSize = 40
         
         # Create an instance of the Tkinter wrapper and novel website parsers
-        self.TKW = TKWrapper("Novel 2 E-Book", 700, 340, "favicon.ico")
+        self.TKW = TKWrapper.TKWrapper("Novel 2 E-Book", 700, 340, "favicon.ico")
         self.coverSize = (210,300)
         
         # Load each of the parser classes in the NovelParsers module

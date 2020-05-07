@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from PageTools import PageTools
+import PageTools
 from PIL import Image
 from io import BytesIO
 import re
@@ -32,7 +32,7 @@ class WuxiaWorldParser:
             # Download and parse the WuxiaWorld API JSON file
             url = self.url+"/api/novels/search"
             payload = '{"title":"","tags":[],"language":"Any","genres":[],"active":null,"sortType":"Name","sortAsc":false,"searchAfter":null,"count":500}'
-            self.jsonFile = PageTools().getJsonFromPost(url,payload)
+            self.jsonFile = PageTools.getJsonFromPost(url,payload)
             self.parseNovelList()
             self.isLoaded = True
     
@@ -87,7 +87,7 @@ class WuxiaWorldParser:
             return
         elif novelName == "Coiling Dragon":
             # Load the webpage for the novel
-            soup = PageTools().getSoupFromUrl(self.novels[novelName][0])
+            soup = PageTools.getSoupFromUrl(self.novels[novelName][0])
             
             # Create a dummy book
             bookTitles = ["Preview"]
@@ -97,12 +97,12 @@ class WuxiaWorldParser:
             bookToC = {}
             
             # Extract the html containing the chapter links and names
-            chapterInfo = PageTools().getElementsFromSoup(soup,[{"class_":"section"},\
+            chapterInfo = PageTools.getElementsFromSoup(soup,[{"class_":"section"},\
                           {"class_":"list-unstyled"},"li"], findAllEnableList = True)
             
             # Extract the chapter links and names
-            chapterInfo = [[PageTools().getElementsFromSoup(chap, ["a"], findAllEnableList=True)[0]['href'],\
-                            PageTools().getElementsFromSoup(chap, ["a"], findAllEnableList=True, onlyText=True)[0].replace("<",'').replace(">",'')] for chap in chapterInfo]
+            chapterInfo = [[PageTools.getElementsFromSoup(chap, ["a"], findAllEnableList=True)[0]['href'],\
+                            PageTools.getElementsFromSoup(chap, ["a"], findAllEnableList=True, onlyText=True)[0].replace("<",'').replace(">",'')] for chap in chapterInfo]
             chapterInfo = chapterInfo[0:3]
             
             # Store chapters for each book
@@ -111,26 +111,26 @@ class WuxiaWorldParser:
             
             # Download cover image
             try:
-                coverImage = PageTools().downloadPage(self.novels[novelName][1])
+                coverImage = PageTools.downloadPage(self.novels[novelName][1])
             except:
-                coverImage = PageTools().downloadPage(noCoverLink)
+                coverImage = PageTools.downloadPage(noCoverLink)
 
             # Add the books, chapters, and the cover to the novel library
             self.novelLibrary[novelName] = [bookTitles, chapterLibrary, bookToC, coverImage]
             return
         
         # Load the webpage for the novel
-        soup = PageTools().getSoupFromUrl(self.novels[novelName][0])
+        soup = PageTools.getSoupFromUrl(self.novels[novelName][0])
         
         # Parse all of the book names/sections
-        bookTitles = PageTools().getElementsFromSoup(soup, [{"id":"accordion"},{"class_":"title"}], onlyText = True)
+        bookTitles = PageTools.getElementsFromSoup(soup, [{"id":"accordion"},{"class_":"title"}], onlyText = True)
         
         
         # Download cover image
         try:
-            coverImage = PageTools().downloadPage(self.novels[novelName][1])
+            coverImage = PageTools.downloadPage(self.novels[novelName][1])
         except:
-            coverImage = PageTools().downloadPage("http://admin.johnsons.net/janda/files/flipbook-coverpage/nocoverimg.jpg")
+            coverImage = PageTools.downloadPage("http://admin.johnsons.net/janda/files/flipbook-coverpage/nocoverimg.jpg")
         
         # Create an empty dictionary to store all chapter names and links
         chapterLibrary = []
@@ -138,12 +138,12 @@ class WuxiaWorldParser:
         for i, bookTitle in enumerate(bookTitles):
             
             # Extract the html containing the chapter links and names
-            chapterInfo = PageTools().getElementsFromSoup(soup,[{"id":"collapse-{}".format(i)},\
+            chapterInfo = PageTools.getElementsFromSoup(soup,[{"id":"collapse-{}".format(i)},\
                           {"class_":"row"},{"class_":"col-sm-6"},{"class_":"chapter-item"}])
             
             # Extract the chapter links and names
-            chapterInfo = [[self.url+PageTools().getElementsFromSoup(chap, ["a"])[0]['href'],\
-                            PageTools().getElementsFromSoup(chap, ["a"], onlyText=True)[0].replace("<",'').replace(">",'')] for chap in chapterInfo]
+            chapterInfo = [[self.url+PageTools.getElementsFromSoup(chap, ["a"])[0]['href'],\
+                            PageTools.getElementsFromSoup(chap, ["a"], onlyText=True)[0].replace("<",'').replace(">",'')] for chap in chapterInfo]
             
             # Store chapters for each book
             bookToC[bookTitle] = chapterInfo
@@ -271,16 +271,16 @@ class GravityTalesParser:
     
     def parseNovelList(self):
         
-        soup = PageTools().getSoupFromUrl(self.url+"/vote")
+        soup = PageTools.getSoupFromUrl(self.url+"/vote")
         
         # Extract the required novel info
-        novelInfo = PageTools().getElementsFromSoup(soup, [{"class_":"col-xs-12 col-sm-6 col-md-3 col-lg-3 image"}])
-        authorInfo = PageTools().getElementsFromSoup(soup, [{"class_":"col-xs-12 col-sm-6 col-md-6 col-lg-7 details"},\
+        novelInfo = PageTools.getElementsFromSoup(soup, [{"class_":"col-xs-12 col-sm-6 col-md-3 col-lg-3 image"}])
+        authorInfo = PageTools.getElementsFromSoup(soup, [{"class_":"col-xs-12 col-sm-6 col-md-6 col-lg-7 details"},\
                                                      {"class_":"label label-primary"}],findAllEnableList = [True, False], onlyText=True)
         
         for novel, author in zip(novelInfo,authorInfo):
-            midHtml = PageTools().getElementsFromSoup(novel, ["a"])[0]
-            innerHtml = PageTools().getElementsFromSoup(novel, ["img"])[0]
+            midHtml = PageTools.getElementsFromSoup(novel, ["a"])[0]
+            innerHtml = PageTools.getElementsFromSoup(novel, ["img"])[0]
             self.novels[innerHtml['title']] = [midHtml['href'], innerHtml['src'], author]
                        
         #self.novelSypnoses = {novel['name']:(novel['sypnosis'] if checkForSypnosis(novel) else "N/A") for novel in self.jsonFile['items']}
@@ -297,30 +297,30 @@ class GravityTalesParser:
             return
         
         # Load the webpage for the novel
-        soup = PageTools().getSoupFromUrl(self.novels[novelName][0]+"/chapters")
+        soup = PageTools.getSoupFromUrl(self.novels[novelName][0]+"/chapters")
         
         # Parse all of the book names/sections
-        bookTitles = PageTools().getElementsFromSoup(soup, [{"id":"chaptergroups"}, "a"], onlyText = True)
+        bookTitles = PageTools.getElementsFromSoup(soup, [{"id":"chaptergroups"}, "a"], onlyText = True)
         
         # Download cover image
         try:
-            coverImage = PageTools().downloadPage(self.novels[novelName][1])
+            coverImage = PageTools.downloadPage(self.novels[novelName][1])
         except:
-            coverImage = PageTools().downloadPage(noCoverLink)
+            coverImage = PageTools.downloadPage(noCoverLink)
         
         # Create an empty dictionary to store all chapter names and links
-        chapterBlocks = PageTools().getElementsFromSoup(soup, [{"class":"tab-content"}, "div"])
+        chapterBlocks = PageTools.getElementsFromSoup(soup, [{"class":"tab-content"}, "div"])
         
         chapterLibrary = []
         bookToC = {}
         for bookTitle, chapterBlock in zip(bookTitles, chapterBlocks):
             
             # Extract the html containing the chapter links and names
-            chapterInfo = PageTools().getElementsFromSoup(chapterBlock,["td"], findAllEnableList = True)
+            chapterInfo = PageTools.getElementsFromSoup(chapterBlock,["td"], findAllEnableList = True)
             
             # Extract the chapter links and names
-            chapterInfo = [[PageTools().getElementsFromSoup(chap, ["a"], findAllEnableList=True)[0]['href'],\
-                            PageTools().getElementsFromSoup(chap, ["a"], findAllEnableList=True, onlyText=True)[0].replace("<",'').replace(">",'')] for chap in chapterInfo]
+            chapterInfo = [[PageTools.getElementsFromSoup(chap, ["a"], findAllEnableList=True)[0]['href'],\
+                            PageTools.getElementsFromSoup(chap, ["a"], findAllEnableList=True, onlyText=True)[0].replace("<",'').replace(">",'')] for chap in chapterInfo]
             
             # Store chapters for each book
             bookToC[bookTitle] = chapterInfo
@@ -410,7 +410,7 @@ class VolareNovelsParser:
         self.jsonFile = None
         # url = self.url+"/api/novels/search"
         # payload = '{"title":"","language":null,"tags":[],"active":null,"sortType":"Name","sortAsc":true,"searchAfter":null,"count":500}'
-        # self.jsonFile = PageTools().getJsonFromPost(url,payload)
+        # self.jsonFile = PageTools.getJsonFromPost(url,payload)
         
         self.novels = None
         self.novelNames = None
@@ -424,7 +424,7 @@ class VolareNovelsParser:
     
     def load(self):
         if not self.isLoaded:
-            self.jsonFile = PageTools().getJsonFromUrl(self.url+"/api/novels")
+            self.jsonFile = PageTools.getJsonFromUrl(self.url+"/api/novels")
             self.parseNovelList()
             self.isLoaded = True
     
@@ -464,17 +464,17 @@ class VolareNovelsParser:
             return
         
         # Load the webpage for the novel
-        soup = PageTools().getSoupFromUrl(self.novels[novelName][0])
+        soup = PageTools.getSoupFromUrl(self.novels[novelName][0])
         
         # Parse all of the book names/sections
-        bookTitles = PageTools().getElementsFromSoup(soup, [{"id":"accordion"},{"class_":"title"}], onlyText = True)
+        bookTitles = PageTools.getElementsFromSoup(soup, [{"id":"accordion"},{"class_":"title"}], onlyText = True)
         
         
         # Download cover image
         try:
-            coverImage = PageTools().downloadPage(self.novels[novelName][1])
+            coverImage = PageTools.downloadPage(self.novels[novelName][1])
         except:
-            coverImage = PageTools().downloadPage(noCoverLink)
+            coverImage = PageTools.downloadPage(noCoverLink)
         
         # Create an empty dictionary to store all chapter names and links
         chapterLibrary = []
@@ -483,12 +483,12 @@ class VolareNovelsParser:
         for i, bookTitle in enumerate(bookTitles):
             
             # Extract the html containing the chapter links and names
-            chapterInfo = PageTools().getElementsFromSoup(soup,[{"id":"collapse-{}".format(i)},\
+            chapterInfo = PageTools.getElementsFromSoup(soup,[{"id":"collapse-{}".format(i)},\
                           {"class_":"row"},{"class_":"col-sm-6"},{"class_":"chapter-item"}])
             
             # Extract the chapter links and names
-            chapterInfo = [[self.url+PageTools().getElementsFromSoup(chap, ["a"])[0]['href'],\
-                            PageTools().getElementsFromSoup(chap, ["a"], onlyText=True)[0].replace("<",'').replace(">",'')] for chap in chapterInfo]
+            chapterInfo = [[self.url+PageTools.getElementsFromSoup(chap, ["a"])[0]['href'],\
+                            PageTools.getElementsFromSoup(chap, ["a"], onlyText=True)[0].replace("<",'').replace(">",'')] for chap in chapterInfo]
             
             # Store chapters for each book
             bookToC[bookTitle ] = chapterInfo
@@ -619,12 +619,12 @@ class TotallyTranslationsParser:
     
     def parseNovelList(self):
         
-        novels = PageTools().getElementsFromUrl(self.url, [ {"class_":"col-md-6"}, {"class_":"slide"}], [False, True])
+        novels = PageTools.getElementsFromUrl(self.url, [ {"class_":"col-md-6"}, {"class_":"slide"}], [False, True])
         
         for novel in novels:
-            title = PageTools().getElementsFromSoup(novel, [ {"class_":"slide-description"}, "strong"], onlyText=True)[0]
-            novelLink = PageTools().getElementsFromSoup(novel, [ {"class_":"slide-image"}, "a"])[0]
-            imgLink = PageTools().getElementsFromSoup(novelLink, ["img"])[0]['src']
+            title = PageTools.getElementsFromSoup(novel, [ {"class_":"slide-description"}, "strong"], onlyText=True)[0]
+            novelLink = PageTools.getElementsFromSoup(novel, [ {"class_":"slide-image"}, "a"])[0]
+            imgLink = PageTools.getElementsFromSoup(novelLink, ["img"])[0]['src']
             self.novels[title] = [novelLink['href'], imgLink, "N/A"]
             
         self.insertSpecialCases()
@@ -639,22 +639,22 @@ class TotallyTranslationsParser:
             return
         
         # Load the webpage for the novel
-        soup = PageTools().getElementsFromUrl(self.novels[novelName][0], [{"class_":"chapters-list"}])[0]
+        soup = PageTools.getElementsFromUrl(self.novels[novelName][0], [{"class_":"chapters-list"}])[0]
         
-        titles = PageTools().getElementsFromSoup(soup, [{"class_":"chapters-title"}], onlyText=True)
-        chapterBlocks = PageTools().getElementsFromSoup(soup, [{"class_":"clearfix chapters-acc"}])
+        titles = PageTools.getElementsFromSoup(soup, [{"class_":"chapters-title"}], onlyText=True)
+        chapterBlocks = PageTools.getElementsFromSoup(soup, [{"class_":"clearfix chapters-acc"}])
         
         # Download cover image
         try:
-            coverImage = PageTools().downloadPage(self.novels[novelName][1])
+            coverImage = PageTools.downloadPage(self.novels[novelName][1])
         except:
-            coverImage = PageTools().downloadPage(noCoverLink)
+            coverImage = PageTools.downloadPage(noCoverLink)
         
         # Create an empty dictionary to store all chapter names and links
         chapterLibrary = []
         bookToC = {}
         for title, chapterBlock in zip(titles, chapterBlocks):
-            chapters = PageTools().getElementsFromSoup(chapterBlock, ["a"])
+            chapters = PageTools.getElementsFromSoup(chapterBlock, ["a"])
             chapterInfo = [[chapter['href'], chapter.string.replace("<",'').replace(">",'')] for chapter in chapters]
 
             # Store chapters for each book
@@ -776,11 +776,11 @@ class NovelleLeggereParser:
     
     def parseNovelList(self):
         
-        tables = PageTools().getElementsFromUrl(self.url, ["table"])
+        tables = PageTools.getElementsFromUrl(self.url, ["table"])
         tables = tables[0:2]
         
         for table in tables:
-            novels = PageTools().getElementsFromSoup(table, ["strong","a"])
+            novels = PageTools.getElementsFromSoup(table, ["strong","a"])
             
             for novel in novels:
                 title = novel.text.strip()
@@ -799,36 +799,36 @@ class NovelleLeggereParser:
             return
         
         # Load the webpage for the novel
-        soup = PageTools().getElementsFromUrl(self.novels[novelName][0], [{"id":"content"}],parser = 'lxml')[0]
-        titles = PageTools().getElementsFromSoup(soup, [{"class_":"su-spoiler-title"}], onlyText=True)
+        soup = PageTools.getElementsFromUrl(self.novels[novelName][0], [{"id":"content"}],parser = 'lxml')[0]
+        titles = PageTools.getElementsFromSoup(soup, [{"class_":"su-spoiler-title"}], onlyText=True)
         
-        chapterBlocks = PageTools().getElementsFromSoup(soup, [{"class_":"display-posts-listing"}])
-        self.novels[novelName][1] = PageTools().getElementsFromSoup(soup,["img"])[0]['src']
+        chapterBlocks = PageTools.getElementsFromSoup(soup, [{"class_":"display-posts-listing"}])
+        self.novels[novelName][1] = PageTools.getElementsFromSoup(soup,["img"])[0]['src']
         
         # Special parsing conditions
         if novelName == "The Wandering Inn":
             titles = titles[4:]
         elif novelName == "Il Demone Contro il Cielo":
             titles = titles[1:]
-            chapterBlocks = PageTools().getElementsFromSoup(soup, [{"class_":"su-spoiler-content su-u-clearfix su-u-trim"}])
+            chapterBlocks = PageTools.getElementsFromSoup(soup, [{"class_":"su-spoiler-content su-u-clearfix su-u-trim"}])
         else:
             titles = titles[2:]
         
         if novelName == "Legendary Moonlight Sculptor":
-            chapterBlocks = PageTools().getElementsFromSoup(soup, [{"class_":"su-spoiler-content su-u-clearfix su-u-trim"}])
+            chapterBlocks = PageTools.getElementsFromSoup(soup, [{"class_":"su-spoiler-content su-u-clearfix su-u-trim"}])
             chapterBlocks = chapterBlocks[2:]
         
         # Download cover image
         try:
-            coverImage = PageTools().downloadPage(self.novels[novelName][1])
+            coverImage = PageTools.downloadPage(self.novels[novelName][1])
         except:
-            coverImage = PageTools().downloadPage(noCoverLink)
+            coverImage = PageTools.downloadPage(noCoverLink)
         
         # Create an empty dictionary to store all chapter names and links
         chapterLibrary = []
         bookToC = {}
         for title, chapterBlock in zip(titles, chapterBlocks):
-            chapters = PageTools().getElementsFromSoup(chapterBlock, ["a"])
+            chapters = PageTools.getElementsFromSoup(chapterBlock, ["a"])
             
             chapterInfo = [[chapter['href'], chapter.string.replace("<",'').replace(">",'')] for chapter in chapters]
 
@@ -951,15 +951,15 @@ class ReadLightNovelParser:
     
     def parseNovelList(self):
         
-        soup = PageTools().getSoupFromUrl(self.url+"novel-list")
-        books = PageTools().getElementsFromSoup(soup,[{"class_":"col-lg-12"},{"class_":"list-by-word-body"},"li"])
+        soup = PageTools.getSoupFromUrl(self.url+"novel-list")
+        books = PageTools.getElementsFromSoup(soup,[{"class_":"col-lg-12"},{"class_":"list-by-word-body"},"li"])
         
         for book in books:
-            if PageTools().getElementsFromSoup(book, ["a"])[0]['href'] == "#":
+            if PageTools.getElementsFromSoup(book, ["a"])[0]['href'] == "#":
                 continue
-            linkTitle = PageTools().getElementsFromSoup(book, [{"data-toggle":"popover"}])[0]
-            self.novels[linkTitle.string] = [linkTitle['href'], PageTools().getElementsFromSoup(book, ["img"])[0]['src'], "N/A"]
-            self.novelSypnoses[linkTitle.string] = PageTools().getElementsFromSoup(book, [{"class_":"pop-summary"}], onlyText=True)[0]
+            linkTitle = PageTools.getElementsFromSoup(book, [{"data-toggle":"popover"}])[0]
+            self.novels[linkTitle.string] = [linkTitle['href'], PageTools.getElementsFromSoup(book, ["img"])[0]['src'], "N/A"]
+            self.novelSypnoses[linkTitle.string] = PageTools.getElementsFromSoup(book, [{"class_":"pop-summary"}], onlyText=True)[0]
         
         self.novelNames = list(self.novels.keys())
         self.novelNames.sort()
@@ -971,16 +971,16 @@ class ReadLightNovelParser:
             return
             
         # Load the webpage for the novel
-        soup = PageTools().getSoupFromUrl(self.novels[novelName][0])
+        soup = PageTools.getSoupFromUrl(self.novels[novelName][0])
         
         # Download cover image
         try:
-            coverImage = PageTools().downloadPage(self.novels[novelName][1])
+            coverImage = PageTools.downloadPage(self.novels[novelName][1])
         except:
-            coverImage = PageTools().downloadPage(noCoverLink)
+            coverImage = PageTools.downloadPage(noCoverLink)
         
         # Parse all of the book names/sections
-        bookTitles = PageTools().getElementsFromSoup(soup, [{"id":"accordion"},{"class_":"panel-title"}], onlyText = True)
+        bookTitles = PageTools.getElementsFromSoup(soup, [{"id":"accordion"},{"class_":"panel-title"}], onlyText = True)
         
         # Create an empty dictionary to store all chapter names and links
         chapterLibrary = []
@@ -988,7 +988,7 @@ class ReadLightNovelParser:
         for i, bookTitle in enumerate(bookTitles):
             
             # Extract the html containing the chapter links and names
-            chapterInfo = PageTools().getElementsFromSoup(soup,[{"id":"collapse-{}".format(i+1)},{"class_":"chapter-chs"},"a"])
+            chapterInfo = PageTools.getElementsFromSoup(soup,[{"id":"collapse-{}".format(i+1)},{"class_":"chapter-chs"},"a"])
             
             # Extract the chapter links and names
             chapterInfo = [[chap['href'], bookTitle+", "+chap.string.replace("<",'').replace(">",'')] for chap in chapterInfo]
