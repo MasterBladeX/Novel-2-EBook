@@ -1,6 +1,6 @@
 import zipfile
 import uuid
-
+from pathlib import Path
 
 def generateEBook(htmlFiles, novelName, bookName, author, coverImage):
     
@@ -9,8 +9,15 @@ def generateEBook(htmlFiles, novelName, bookName, author, coverImage):
         novelName = novelName.replace(character, " ")
         bookName = bookName.replace(character, " ")
     
+    while "  " in bookName:
+        bookName = bookName.replace("  ", " ")
+    
+    while "  " in novelName:
+        novelName = novelName.replace("  ", " ")
+    
     # Ceate the ebook file
-    epub = zipfile.ZipFile(novelName + ", " + bookName + ".epub", "w", zipfile.ZIP_DEFLATED)
+    Path("Books/{0}".format(novelName)).mkdir(parents=True, exist_ok=True)
+    epub = zipfile.ZipFile("Books/{0}/{0}, {1}.epub".format(novelName,bookName), "w", zipfile.ZIP_DEFLATED)
 
     # Replace more invalid characters
     novelName = novelName.replace('&', "&amp;")

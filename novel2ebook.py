@@ -23,7 +23,8 @@ class NovelGUI:
         sites = list(self.parsers.keys())
         
         # Wuxia world selected by default
-        self.selectedParser = self.parsers["Wuxia World"]
+        defaultSite = "Wuxia World"
+        self.selectedParser = self.parsers[defaultSite]
         novels = self.selectedParser.getNovelNames()
         novels.sort()
         
@@ -33,7 +34,7 @@ class NovelGUI:
         self.TKW.createLabel("BookLabel", "Select Book: ", 0, {"pady":10, "padx":10, "sticky":"W"})
         self.TKW.createLabel("EndLabel", "Select Ending Chapter: ", 0, {"pady":10, "padx":10, "sticky":"W"})
         self.TKW.createLabel("ChaptersOnlyLabel", "Download separate chapters: ", 0, {"pady":10, "padx":10, "sticky":"W"})
-        self.TKW.createCombobox("SiteCombobox", 1, sites, {"width":42}, initialSelection="Wuxia World")
+        self.TKW.createCombobox("SiteCombobox", 1, sites, {"width":42}, initialSelection=defaultSite)
         self.TKW.createCombobox("NovelCombobox", 1, novels, {"width":42})
         self.TKW.createCombobox("BookCombobox", 1, self.selectedParser.getNovelBookNames(novels[0]), {"width":42})
         self.TKW.createCombobox("EndCombobox", 1, self.selectedParser.getNovelBookNames(novels[0]), {"width":42})

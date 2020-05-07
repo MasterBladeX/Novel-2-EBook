@@ -24,7 +24,7 @@ To run this script you'll need to have Python 3.x.x installed which you can find
 
 Download the precompiled program from [releases](https://github.com/EternalTrail/Wuxiaworld-2-eBook/releases), unzip the file, and run novel2ebook.exe to launch the program.
 
-After that just select the website you want, then the novel you want to read, select the chapter range or the book you want to download and hit the "Download" button. Once the download is finished, the novel willl be stored in the same folder as the program/source. If you want to read on your Kindle device I highly recommend using [Calibre](https://calibre-ebook.com/) which can automatically convert *and* upload your freshly cooked ebooks to your device. Keep it mind that it will take some time for the book to be downloaded, so don't close the window or the console (or do as you please, *you do you*). 
+After that just select the website you want, then the novel you want to read, select the chapter range or the book you want to download and hit the "Download" button. Once the download is finished, the novel will be stored in the Books folder which is in the same directory as the program. If you want to read on your Kindle device I highly recommend using [Calibre](https://calibre-ebook.com/) which can automatically convert *and* upload your freshly cooked ebooks to your device. Keep it mind that it will take some time for the book to be downloaded, so don't close the window or the console (or do as you please, *you do you*). 
 
 Alternatively, you can download the source, install the requirements as mentioned below, navigate to the folder where you stored the source code using the console and write:
 
