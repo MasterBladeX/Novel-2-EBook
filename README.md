@@ -6,7 +6,7 @@ Visit [novel-ebook.com](https://novel-ebook.com) for a webapp with the same func
 
 ## Getting Started
 
-To run this script you'll need to have Python 3.x.x installed which you can find [here](https://www.python.org/downloads/ "Python Download Link").
+To run this script you'll need to have Python 3.7+.x installed which you can find [here](https://www.python.org/downloads/ "Python Download Link").
 
 ### Features
 
@@ -40,7 +40,7 @@ path/where/you/installed/python.exe novel2ebook.py
 
 ### Prerequisites
 
-As mentioned before this script was written for Python version 3.x.x. It may work with other versions too but none are tested.
+As mentioned before this script was written for Python version 3.7+.x. It may work with other versions too but none are tested.
 Additionally the Python image library (Pillow), lxml, and BeautifulSoup4 are required.
 To install all dependencies just use the console to navigate into the project folder and write
 
