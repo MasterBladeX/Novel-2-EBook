@@ -41,7 +41,7 @@ path/where/you/installed/python.exe novel2ebook.py
 ### Prerequisites
 
 As mentioned before this script was written for Python version 3.7+.x. It may work with other versions too but none are tested.
-Additionally the Python image library (Pillow), lxml, and BeautifulSoup4 are required.
+Additionally the Python image library (Pillow), lxml, html5lib, and BeautifulSoup4 are required.
 To install all dependencies just use the console to navigate into the project folder and write
 
 ```

@@ -977,13 +977,14 @@ class ReadLightNovelParser:
     
     def parseNovelList(self):
         
-        soup = PageTools.getSoupFromUrl(self.url+"novel-list")
+        soup = PageTools.getSoupFromUrl(self.url+"novel-list", parser="html5lib")
         books = PageTools.getElementsFromSoup(soup,[{"class_":"col-lg-12"},{"class_":"list-by-word-body"},"li"])
         
         for book in books:
             if PageTools.getElementsFromSoup(book, ["a"])[0]['href'] == "#":
                 continue
             linkTitle = PageTools.getElementsFromSoup(book, [{"data-toggle":"popover"}])[0]
+            
             self.novels[linkTitle.string] = [linkTitle['href'], PageTools.getElementsFromSoup(book, ["img"])[0]['src'], "N/A"]
             self.novelSypnoses[linkTitle.string] = PageTools.getElementsFromSoup(book, [{"class_":"pop-summary"}], onlyText=True)[0]
         
