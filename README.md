@@ -12,7 +12,6 @@ To run this script you'll need to have Python 3.7+.x installed which you can fin
 
 - Download your favourite novels from as .epub books from:
     - [WuxiaWorld](https://www.wuxiaworld.com)
-    - [Gravity Tales](https://gravitytales.com)
     - [Volare Novels](https://www.volarenovels.com)
     - [Totally Translations](https://totallytranslations.com/)
 	- [Novelle Leggere](https://www.novelleleggere.com/)
