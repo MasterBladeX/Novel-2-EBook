@@ -22,7 +22,7 @@ class WuxiaWorldParser:
         self.novelNames = None
         self.novelSypnoses = None
         self.isLoaded = False
-        self.bsParser = "html.parser"
+        self.bsParser = "lxml"
 
         # Container for all novels that are requested
         self.novelLibrary = {}
