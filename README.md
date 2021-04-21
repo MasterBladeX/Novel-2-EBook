@@ -11,13 +11,13 @@ To run this script you'll need to have Python 3.7+.x installed which you can fin
 ### Features
 
 - Download your favourite novels from as .epub books from:
-    - [WuxiaWorld](https://www.wuxiaworld.com)
+    - [WuxiaWorld](https://www.wuxiaworld.com) - doesn't really work anymore because of the Karma system
     - [Volare Novels](https://www.volarenovels.com)
     - [Totally Translations](https://totallytranslations.com/)
 	- [Novelle Leggere](https://www.novelleleggere.com/)
 	- [Read Light Novel](https://www.readlightnovel.org/) *initial load time for this is slow due to the sheer amount of novels* **also, poor quality formatting**
 - Automatically adds some metadata like title and cover
-- Concurrent download of chapters - *significantly* faster download of books than just downloading them one by one (I'm talking an order or 2 of magnitudes faster)
+- Concurrent download of chapters - *significantly* faster download of books than just downloading them one by one (I'm talking ten to a hundred times faster)
 
 ### Usage
 
