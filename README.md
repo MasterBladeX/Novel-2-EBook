@@ -11,7 +11,7 @@ To run this script you'll need to have Python 3.7+.x installed which you can fin
 ### Features
 
 - Download your favourite novels from as .epub books from:
-    - [WuxiaWorld](https://www.wuxiaworld.com) - doesn't really work anymore because of the Karma system
+    - [WuxiaWorld](https://www.wuxiaworld.com) - doesn't really work for all novels anymore because of the Karma system
     - [Volare Novels](https://www.volarenovels.com)
     - [Totally Translations](https://totallytranslations.com/)
 	- [Novelle Leggere](https://www.novelleleggere.com/)
