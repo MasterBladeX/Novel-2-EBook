@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from multiprocessing.pool import ThreadPool
 import PageTools
 from PIL import Image
 from io import BytesIO
@@ -811,16 +812,27 @@ class ReadLightNovelParser:
     
     def parseNovelList(self):
         
-        soup = PageTools.getSoupFromUrl(self.url+"novel-list", parser="html5lib")
-        books = PageTools.getElementsFromSoup(soup,[{"class_":"col-lg-12"},{"class_":"list-by-word-body"},"li"])
+        #soup = PageTools.getSoupFromUrl(self.url+"novel-list", parser="html5lib")
+        letters = " ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        links = [self.url+"novel-list/"+letter for letter in letters]
+        poolSize = len(letters)
+        letters = []
         
-        for book in books:
-            if PageTools.getElementsFromSoup(book, ["a"])[0]['href'] == "#":
-                continue
-            linkTitle = PageTools.getElementsFromSoup(book, [{"data-toggle":"popover"}])[0]
-            
-            self.novels[linkTitle.string] = [linkTitle['href'], PageTools.getElementsFromSoup(book, ["img"])[0]['src'], "N/A"]
-            self.novelSypnoses[linkTitle.string] = PageTools.getElementsFromSoup(book, [{"class_":"pop-summary"}], onlyText=True)[0]
+        def downloadPage(link):
+            letters.append(PageTools.getSoupFromUrl(link, parser="html5lib"))
+        
+        with ThreadPool(poolSize) as pool:
+            pool.map(downloadPage, links, chunksize=1)
+        
+        for soup in letters:
+            books = PageTools.getElementsFromSoup(soup,[{"class_":"col-lg-12"},{"class_":"list-by-word-body"},"li"])
+            for book in books:
+                if PageTools.getElementsFromSoup(book, ["a"])[0]['href'] == "#":
+                    continue
+                linkTitle = PageTools.getElementsFromSoup(book, [{"data-toggle":"popover"}])[0]
+                
+                self.novels[linkTitle.string] = [linkTitle['href'], PageTools.getElementsFromSoup(book, ["img"])[0]['src'], "N/A"]
+                self.novelSypnoses[linkTitle.string] = PageTools.getElementsFromSoup(book, [{"class_":"pop-summary"}], onlyText=True)[0]
         
         self.novelNames = list(self.novels.keys())
         self.novelNames.sort()
@@ -921,22 +933,26 @@ class ReadLightNovelParser:
         for element in elements:
             for script in content.find_all(class_=element):
                 script.decompose()
-        
+  
         for a in content.find_all("a"):
             a.decompose()
-        
+ 
         for hr in content.find_all("hr"):
             hr.decompose()
-        
+
         for script in content.find_all("script"):
             script.decompose()
-        
+   
         for div in content.find_all("div"):
             div.decompose()
         
+        chapContent = content.decode_contents()
+        chapContent = re.sub("<br>", "", chapContent)
+        chapContent = re.sub("</br>", "", chapContent)
         # Add html header to the chapter
-        chapter = '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>\n'.format(chapterTitle)
-        chapter += re.sub(" \.", ".", content.decode_contents()).strip("\n"+chapterTitle)
+        chapter = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html>\n\n"
+        chapter += '<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n<title>{0}</title>\n</head>\n<body>\n<h1>{0}</h1>\n'.format(chapterTitle)
+        chapter += re.sub(" \.", ".", chapContent).strip("\n"+chapterTitle)
         
         # Collect some garbage to reduce RAM usage
         soup = None
