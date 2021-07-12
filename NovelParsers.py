@@ -44,7 +44,7 @@ class WuxiaWorldParser:
     
     
     def insertSpecialCases(self):
-        del self.novels['Absolute Resonance']
+        # del self.novels['Absolute Resonance']
         pass
         # self.novels["Trash of the Count's Family"] = ["https://www.wuxiaworld.com/novel/trash-of-the-counts-family","https://cdn.wuxiaworld.com/images/covers/tcf.jpg","miraclerifle","TCF"]
         # self.novels["The Novel's Extra"] = ["https://www.wuxiaworld.com/novel/the-novels-extra","https://cdn.wuxiaworld.com/images/covers/tne.jpg","FudgeNouget","TNE"]
